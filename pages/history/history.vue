@@ -27,6 +27,9 @@
           <view class="color-category">{{ item.category }}</view>
         </view>
         <view class="color-time">{{ formatDate(item.timestamp) }}</view>
+        <view class="favorite-btn" @click.stop="toggleFavorite(item)">
+          <uni-icons :type="isFavorite(item) ? 'star-filled' : 'star'" size="20" :color="isFavorite(item) ? '#FFD700' : '#999'" />
+        </view>
       </view>
       
       <view class="empty-history" v-if="colorHistory.length === 0">
@@ -41,15 +44,18 @@
 export default {
   data() {
     return {
-      colorHistory: []
+      colorHistory: [],
+      favoriteColors: []
     }
   },
   onLoad() {
     this.loadHistory();
+    this.loadFavoriteColors();
   },
   onShow() {
     // 每次显示页面时重新加载历史记录
     this.loadHistory();
+    this.loadFavoriteColors();
   },
   methods: {
     // 加载历史记录
@@ -63,6 +69,53 @@ export default {
         console.error('读取历史记录失败', e);
         uni.showToast({
           title: '读取历史记录失败',
+          icon: 'none'
+        });
+      }
+    },
+    
+    // 加载收藏的颜色
+    loadFavoriteColors() {
+      try {
+        const favorites = uni.getStorageSync('favoriteColors');
+        if (favorites) {
+          this.favoriteColors = JSON.parse(favorites);
+        }
+      } catch (e) {
+        console.error('读取收藏颜色失败', e);
+      }
+    },
+    
+    // 检查颜色是否已收藏
+    isFavorite(color) {
+      return this.favoriteColors.some(item => item.hex === color.hex);
+    },
+    
+    // 切换收藏状态
+    toggleFavorite(color) {
+      const index = this.favoriteColors.findIndex(item => item.hex === color.hex);
+      if (index === -1) {
+        // 添加到收藏
+        this.favoriteColors.push(color);
+        uni.showToast({
+          title: '已添加到收藏',
+          icon: 'success'
+        });
+      } else {
+        // 取消收藏
+        this.favoriteColors.splice(index, 1);
+        uni.showToast({
+          title: '已取消收藏',
+          icon: 'none'
+        });
+      }
+      // 保存到本地存储
+      try {
+        uni.setStorageSync('favoriteColors', JSON.stringify(this.favoriteColors));
+      } catch (e) {
+        console.error('保存收藏失败', e);
+        uni.showToast({
+          title: '操作失败',
           icon: 'none'
         });
       }
@@ -210,5 +263,11 @@ export default {
   justify-content: center;
   height: 100%;
   color: #999;
+}
+
+.favorite-btn {
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
 }
 </style>

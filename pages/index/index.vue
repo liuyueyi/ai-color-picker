@@ -27,7 +27,7 @@
     <view class="color-display" v-if="selectedColor" :style="{ backgroundColor: selectedColor.hex }">
       <text class="color-name" :style="{ color: getContrastColor() }">{{ selectedColor.name }}</text>
       <text class="color-hex" :style="{ color: getContrastColor() }">{{ selectedColor.hex }}</text>
-      <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }">
+      <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }" @click="showDetails = !showDetails">
         <text :style="{ color: getContrastColor() }">{{ showDetails ? '隐藏详情' : '显示详情' }}</text>
       </view>
     </view>

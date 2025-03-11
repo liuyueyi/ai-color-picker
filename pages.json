@@ -19,6 +19,13 @@
 			"style" : {
 				"navigationBarTitleText" : "颜色详情"
 			}
+		},
+		{
+			"path" : "pages/favorite/favorite",
+			"style" : {
+				"navigationBarTitleText" : "收藏的颜色",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {
@@ -42,6 +49,11 @@
 			"text": "提取记录",
 			"iconPath": "static/icons/history-normal.png",
 			"selectedIconPath": "static/icons/history-active.png"
+		}, {
+			"pagePath": "pages/favorite/favorite",
+			"text": "收藏",
+			"iconPath": "static/icons/favorite-normal.png",
+			"selectedIconPath": "static/icons/favorite-active.png"
 		}]
 	},
 	"uniIdRouter": {}

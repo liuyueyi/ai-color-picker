@@ -25,10 +25,10 @@
 
     <!-- 颜色显示区域 -->
     <view class="color-display" v-if="selectedColor" :style="{ backgroundColor: selectedColor.hex }">
-      <text class="color-name">{{ selectedColor.name }}</text>
-      <text class="color-hex">{{ selectedColor.hex }}</text>
-      <view class="details-button" @click="showDetails = !showDetails">
-        <text>{{ showDetails ? '隐藏详情' : '显示详情' }}</text>
+      <text class="color-name" :style="{ color: getContrastColor() }">{{ selectedColor.name }}</text>
+      <text class="color-hex" :style="{ color: getContrastColor() }">{{ selectedColor.hex }}</text>
+      <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }">
+        <text :style="{ color: getContrastColor() }">{{ showDetails ? '隐藏详情' : '显示详情' }}</text>
       </view>
     </view>
 
@@ -525,19 +525,94 @@ export default {
       };
     },
 
-    // 获取颜色名称 (简化版)
+    // 获取颜色名称 (增强版)
     getColorName(r, g, b) {
-      // 简化的颜色名称判断
-      if (r > 150 && g < 100 && b < 100) return 'Red';
-      if (r > 150 && g > 100 && b < 100) return 'Orange';
-      if (r > 150 && g > 150 && b < 100) return 'Yellow';
-      if (r < 100 && g > 150 && b < 100) return 'Green';
-      if (r < 100 && g < 100 && b > 150) return 'Blue';
-      if (r > 150 && g < 100 && b > 150) return 'Purple';
-      if (r > 150 && g > 100 && b > 50 && r > g && g > b) return 'Copper';
-      if (r > 200 && g > 200 && b > 200) return 'White';
-      if (r < 50 && g < 50 && b < 50) return 'Black';
-      return 'Unknown';
+      // 计算HSL值用于更精确的颜色判断
+      const hsl = this.rgbToHsl(r, g, b);
+      const h = hsl.h; // 色相
+      const s = hsl.s; // 饱和度
+      const l = hsl.l; // 亮度
+
+      // 灰度系列
+      if (s < 10) {
+        if (l < 15) return '黑色 (Black)';
+        if (l < 30) return '深灰 (Dark Gray)';
+        if (l < 50) return '灰色 (Gray)';
+        if (l < 70) return '浅灰 (Light Gray)';
+        if (l < 85) return '银色 (Silver)';
+        return '白色 (White)';
+      }
+
+      // 根据色相判断基本颜色
+      if (h >= 0 && h < 15 || h >= 345 && h <= 360) {
+        if (l < 20) return '深红 (Dark Red)';
+        if (l < 40) return '红色 (Red)';
+        if (l < 60) return '鲜红 (Bright Red)';
+        return '浅红 (Light Red)';
+      }
+
+      if (h >= 15 && h < 40) {
+        if (l < 30) return '棕色 (Brown)';
+        if (l < 50) return '橙色 (Orange)';
+        if (s > 80) return '金色 (Gold)';
+        return '橘黄 (Orange Yellow)';
+      }
+
+      if (h >= 40 && h < 70) {
+        if (l < 30) return '橄榄 (Olive)';
+        if (l < 50) return '黄色 (Yellow)';
+        if (l < 70) return '鲜黄 (Bright Yellow)';
+        return '浅黄 (Light Yellow)';
+      }
+
+      if (h >= 70 && h < 150) {
+        if (l < 20) return '深绿 (Dark Green)';
+        if (l < 40) return '绿色 (Green)';
+        if (h < 100) return '黄绿 (Yellow Green)';
+        if (h > 120) return '青绿 (Teal)';
+        return '鲜绿 (Bright Green)';
+      }
+
+      if (h >= 150 && h < 200) {
+        if (l < 20) return '深青 (Dark Cyan)';
+        if (l < 40) return '青色 (Cyan)';
+        if (l < 60) return '湖蓝 (Turquoise)';
+        return '浅青 (Light Cyan)';
+      }
+
+      if (h >= 200 && h < 260) {
+        if (l < 20) return '深蓝 (Dark Blue)';
+        if (l < 40) return '蓝色 (Blue)';
+        if (l < 60) return '天蓝 (Sky Blue)';
+        return '浅蓝 (Light Blue)';
+      }
+
+      if (h >= 260 && h < 285) {
+        if (l < 20) return '深紫 (Dark Purple)';
+        if (l < 40) return '紫色 (Purple)';
+        if (l < 60) return '鲜紫 (Bright Purple)';
+        return '浅紫 (Light Purple)';
+      }
+
+      if (h >= 285 && h < 345) {
+        if (l < 20) return '深粉 (Dark Pink)';
+        if (l < 40) return '品红 (Magenta)';
+        if (l < 60) return '粉红 (Pink)';
+        return '浅粉 (Light Pink)';
+      }
+
+      // 特殊颜色判断
+      if (r > 150 && g > 100 && b > 50 && r > g && g > b) {
+        if (l < 40) return '铜色 (Copper)';
+        return '古铜 (Bronze)';
+      }
+
+      if (Math.abs(r - g) < 10 && Math.abs(g - b) < 10 && Math.abs(r - b) < 10) {
+        return '中性灰 (Neutral Gray)';
+      }
+
+      // 默认返回
+      return '未知 (Unknown)';
     },
 
     // 保存颜色到历史记录
@@ -673,6 +748,28 @@ export default {
       return {
         background: `linear-gradient(to right, ${gradientColors})`
       };
+    },
+    // 获取与背景色对比的文字颜色
+    getContrastColor() {
+      if (!this.selectedColor) return '#000000';
+
+      const { r, g, b } = this.selectedColor.rgb;
+      // 计算亮度 (基于人眼对不同颜色的感知)
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+      // 亮度阈值，低于此值使用白色文字，高于此值使用黑色文字
+      return luminance > 0.5 ? '#000000' : '#ffffff';
+    },
+
+    // 获取与背景色对比的半透明背景色
+    getContrastBackgroundColor() {
+      if (!this.selectedColor) return 'rgba(255, 255, 255, 0.2)';
+
+      const { r, g, b } = this.selectedColor.rgb;
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+      // 根据背景亮度选择半透明的黑色或白色
+      return luminance > 0.5 ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)';
     },
   }
 }

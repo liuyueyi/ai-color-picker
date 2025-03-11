@@ -173,6 +173,23 @@
   <!-- 隐藏的canvas用于颜色提取 -->
   <canvas canvas-id="colorPickerCanvas"
     :style="{ position: 'absolute', width: canvasWidth + 'px', height: canvasHeight + 'px', left: '-999px' }"></canvas>
+
+  <!-- 颜色命名弹窗 -->
+  <view class="dialog-mask" v-if="showNameDialog" @click="cancelSaveColor">
+    <view class="dialog-container" @click.stop>
+      <view class="dialog-header">
+        <text>保存颜色</text>
+      </view>
+      <view class="dialog-content">
+        <view class="color-preview" :style="{ backgroundColor: selectedColor ? selectedColor.hex : '#000' }"></view>
+        <input class="name-input" v-model="colorNameInput" placeholder="请输入颜色名称" />
+      </view>
+      <view class="dialog-footer">
+        <button class="dialog-btn cancel-btn" @click="cancelSaveColor">取消</button>
+        <button class="dialog-btn confirm-btn" @click="confirmSaveColor">确认</button>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -185,7 +202,10 @@ export default {
       indicatorPosition: { x: 0, y: 0 },
       colorHistory: [],
       canvasWidth: 100,
-      canvasHeight: 100
+      canvasHeight: 100,
+      // 新增变量
+      showNameDialog: false,
+      colorNameInput: '',
     }
   },
   onLoad() {
@@ -523,10 +543,20 @@ export default {
     // 保存颜色到历史记录
     saveColor() {
       if (!this.selectedColor) return;
+      // 显示命名弹窗
+      this.colorNameInput = this.selectedColor.name || '';
+      // 默认使用当前颜色名称
+      this.showNameDialog = true;
+    },
+
+    // 确认保存颜色
+    confirmSaveColor() {
+      if (!this.selectedColor) return;
 
       // 创建历史记录项
       const historyItem = {
         ...this.selectedColor,
+        name: this.colorNameInput || this.selectedColor.name, // 使用用户输入的名称
         category: 'Common colors',
         timestamp: new Date().toISOString()
       };
@@ -553,6 +583,14 @@ export default {
           icon: 'none'
         });
       }
+
+      // 关闭弹窗
+      this.showNameDialog = false;
+    },
+
+    // 取消保存
+    cancelSaveColor() {
+      this.showNameDialog = false;
     },
 
     // 跳转到历史记录页面
@@ -969,5 +1007,76 @@ export default {
   border-radius: 5px;
   margin-top: 15px;
   margin-bottom: 10px;
+}
+
+/* 弹窗样式 */
+.dialog-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-container {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.dialog-header {
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+.dialog-content {
+  padding: 20px;
+}
+
+.color-preview {
+  width: 100%;
+  height: 60px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.name-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.dialog-footer {
+  display: flex;
+  border-top: 1px solid #eee;
+}
+
+.dialog-btn {
+  flex: 1;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.cancel-btn {
+  color: #666;
+  border-right: 1px solid #eee;
+}
+
+.confirm-btn {
+  color: #2196F3;
 }
 </style>

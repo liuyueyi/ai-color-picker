@@ -17,7 +17,8 @@
 		{
 			"path" : "pages/detail/detail",
 			"style" : {
-				"navigationBarTitleText" : "颜色详情"
+				"navigationBarTitleText" : "颜色详情",
+				"navigationStyle": "custom"
 			}
 		},
 		{

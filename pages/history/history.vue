@@ -3,32 +3,40 @@
     <!-- 顶部导航栏 -->
     <view class="navbar">
       <view class="navbar-left" @click="goBack">
-        <uni-icons type="left" size="20" color="#fff" />
+        <!-- <uni-icons type="left" size="20" color="#fff" /> -->
       </view>
       <view class="navbar-title">History</view>
       <view class="navbar-right">
         <uni-icons type="trash" size="20" color="#fff" @click="showDeleteConfirm" />
-        <uni-icons type="more-filled" size="20" color="#fff" style="margin-left: 15px;" />
+        <!-- 待添加一个分组检索功能 -->
+        <!-- <uni-icons type="more-filled" size="20" color="#fff" style="margin-left: 15px;" /> -->
       </view>
     </view>
     
     <!-- 历史记录列表 -->
     <view class="history-list">
       <view 
-        class="history-item" 
+        class="history-item-wrapper" 
         v-for="(item, index) in colorHistory" 
         :key="index"
-        @click="goToColorDetail(item)"
+        @touchstart="touchStart($event, index)"
+        @touchmove="touchMove($event, index)"
+        @touchend="touchEnd($event, index)"
       >
-        <view class="color-circle" :style="{ backgroundColor: item.hex }"></view>
-        <view class="color-info">
-          <view class="color-name">{{ item.name }}</view>
-          <view class="color-hex">{{ item.hex }}</view>
-          <view class="color-category">{{ item.category }}</view>
+        <view class="history-item" :style="{ transform: `translateX(${item.offset || 0}px)` }" @click="goToColorDetail(item)">
+          <view class="color-circle" :style="{ backgroundColor: item.hex }"></view>
+          <view class="color-info">
+            <view class="color-name">{{ item.name }}</view>
+            <view class="color-hex">{{ item.hex }}</view>
+            <view class="color-category">{{ item.category }}</view>
+          </view>
+          <view class="color-time">{{ formatDate(item.timestamp) }}</view>
+          <view class="favorite-btn" @click.stop="toggleFavorite(item)">
+            <uni-icons :type="isFavorite(item) ? 'star-filled' : 'star'" size="20" :color="isFavorite(item) ? '#FFD700' : '#999'" />
+          </view>
         </view>
-        <view class="color-time">{{ formatDate(item.timestamp) }}</view>
-        <view class="favorite-btn" @click.stop="toggleFavorite(item)">
-          <uni-icons :type="isFavorite(item) ? 'star-filled' : 'star'" size="20" :color="isFavorite(item) ? '#FFD700' : '#999'" />
+        <view class="delete-btn" @click="deleteHistoryItem(index)">
+          <uni-icons type="trash" size="20" color="#fff" />
         </view>
       </view>
       
@@ -45,7 +53,11 @@ export default {
   data() {
     return {
       colorHistory: [],
-      favoriteColors: []
+      favoriteColors: [],
+      touchStartX: 0,
+      touchStartY: 0,
+      currentIndex: -1,
+      deleteButtonWidth: 80
     }
   },
   onLoad() {
@@ -168,6 +180,89 @@ export default {
         });
       }
     },
+
+    // 触摸开始
+    touchStart(event, index) {
+      const touch = event.touches[0];
+      this.touchStartX = touch.clientX;
+      this.touchStartY = touch.clientY;
+      this.currentIndex = index;
+    },
+
+    // 触摸移动
+    touchMove(event, index) {
+      if (this.currentIndex !== index) return;
+      
+      const touch = event.touches[0];
+      const moveX = touch.clientX - this.touchStartX;
+      const moveY = touch.clientY - this.touchStartY;
+
+      // 如果垂直移动距离大于水平移动距离，则不处理
+      if (Math.abs(moveY) > Math.abs(moveX)) return;
+
+      // 限制只能左滑
+      if (moveX > 0) {
+        this.$set(this.colorHistory[index], 'offset', 0);
+        const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+        if (deleteBtn) {
+          deleteBtn.style.transform = `translateX(${this.deleteButtonWidth}px)`;
+        }
+        return;
+      }
+
+      // 限制最大滑动距离
+      const offset = Math.max(-this.deleteButtonWidth, Math.min(0, moveX));
+      this.$set(this.colorHistory[index], 'offset', offset);
+
+      // 同步更新删除按钮的位置
+      const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+      if (deleteBtn) {
+        deleteBtn.style.transform = `translateX(${this.deleteButtonWidth + offset}px)`;
+      }
+    },
+
+    // 触摸结束
+    touchEnd(event, index) {
+      if (this.currentIndex !== index) return;
+      
+      const item = this.colorHistory[index];
+      const offset = item.offset || 0;
+      
+      // 根据滑动距离决定是否显示删除按钮
+      if (Math.abs(offset) > this.deleteButtonWidth / 2) {
+        this.$set(this.colorHistory[index], 'offset', -this.deleteButtonWidth);
+        const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+        if (deleteBtn) {
+          deleteBtn.style.transform = `translateX(0)`;
+        }
+      } else {
+        this.$set(this.colorHistory[index], 'offset', 0);
+        const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+        if (deleteBtn) {
+          deleteBtn.style.transform = `translateX(${this.deleteButtonWidth}px)`;
+        }
+      }
+      
+      this.currentIndex = -1;
+    },
+
+    // 删除单个历史记录
+    deleteHistoryItem(index) {
+      this.colorHistory.splice(index, 1);
+      try {
+        uni.setStorageSync('colorHistory', JSON.stringify(this.colorHistory));
+        uni.showToast({
+          title: '已删除',
+          icon: 'success'
+        });
+      } catch (e) {
+        console.error('删除历史记录失败', e);
+        uni.showToast({
+          title: '删除失败',
+          icon: 'none'
+        });
+      }
+    },
     
     // 跳转到颜色详情页
     goToColorDetail(color) {
@@ -214,13 +309,49 @@ export default {
   padding: 10px;
 }
 
+.history-item-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.history-item {
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 5%;
+  right: 85px;
+  width: 75px;
+  height: 90%;
+  border-radius: 24rpx;
+  background-color: #ff3b30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(80px);
+  z-index: 0;
+}
+
+.history-item-wrapper {
+  position: relative;
+  margin: 10px;
+  overflow: hidden;
+}
+
 .history-item {
   display: flex;
   align-items: center;
-  background-color: white;
   padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  z-index: 2;
 }
 
 .color-circle {

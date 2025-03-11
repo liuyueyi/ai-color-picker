@@ -42,7 +42,7 @@
             <uni-icons type="arrow-up" size="16" color="#fff" />
           </view>
           <view class="temperature-bar">
-            <view class="gradient-bar temperature-gradient"></view>
+            <view class="gradient-bar temperature-gradient" :style="getTemperatureGradientStyle()"></view>
             <view class="temperature-indicator" :style="{ left: calculateTemperaturePosition() + '%' }"></view>
           </view>
         </view>
@@ -55,7 +55,8 @@
           </view>
           <view class="wavelength-bar">
             <text class="wavelength-label left">UV</text>
-            <view class="gradient-bar wavelength-gradient"></view>
+            <view class="gradient-bar wavelength-gradient" :style="getWavelengthGradientStyle()"></view>
+            <view class="wavelength-indicator" :style="{ left: calculateWavelengthPosition() + '%' }"></view>
             <text class="wavelength-label right">IR</text>
           </view>
         </view>
@@ -67,8 +68,8 @@
             <uni-icons type="arrow-up" size="16" color="#fff" />
           </view>
           <view class="luminance-bar">
-            <view class="progress-bar">
-              <view class="progress-fill" :style="{ width: selectedColor.luminance + '%' }"></view>
+            <view class="progress-bar luminance-background">
+              <view class="progress-fill luminance-fill" :style="{ width: selectedColor.luminance + '%' }"></view>
             </view>
           </view>
           <uni-icons type="arrow-up" size="16" color="#fff" />
@@ -577,6 +578,64 @@ export default {
 
       return position;
     },
+    // 计算波长指示器位置
+    calculateWavelengthPosition() {
+      if (!this.selectedColor) return 0;
+
+      // 可见光波长范围约为380nm到780nm
+      const minWavelength = 380;
+      const maxWavelength = 780;
+      const wavelength = this.selectedColor.wavelength;
+
+      // 将波长值映射到0-100的范围
+      let position = ((wavelength - minWavelength) / (maxWavelength - minWavelength)) * 100;
+
+      // 限制在0-100范围内
+      position = Math.max(0, Math.min(100, position));
+
+      return position;
+    },
+    // 获取色温渐变样式
+    getTemperatureGradientStyle() {
+      if (!this.selectedColor) return {};
+
+      // 根据当前颜色调整色温渐变
+      const { r, g, b } = this.selectedColor.rgb;
+      const warmColor = `rgb(${Math.min(r + 50, 255)}, ${Math.min(g + 30, 255)}, ${Math.max(b - 50, 0)})`;
+      const coolColor = `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 20, 0)}, ${Math.min(b + 50, 255)})`;
+
+      return {
+        background: `linear-gradient(to right, ${warmColor}, #ffff00, #ffffff, ${coolColor})`
+      };
+    },
+
+    // 获取波长渐变样式
+    getWavelengthGradientStyle() {
+      if (!this.selectedColor) return {};
+
+      // 根据当前颜色调整波长渐变
+      const { r, g, b } = this.selectedColor.rgb;
+      const dominantColor = this.selectedColor.hex;
+
+      // 根据主波长位置确定渐变
+      const position = this.calculateWavelengthPosition();
+      let gradientColors;
+
+      if (position < 33) {
+        // 偏紫蓝色区域
+        gradientColors = `#9900ff, #0000ff, ${dominantColor}, #00ff00, #ffff00, #ff0000`;
+      } else if (position < 66) {
+        // 偏绿黄色区域
+        gradientColors = `#9900ff, #0000ff, #00ff00, ${dominantColor}, #ffff00, #ff0000`;
+      } else {
+        // 偏红色区域
+        gradientColors = `#9900ff, #0000ff, #00ff00, #ffff00, ${dominantColor}, #ff0000`;
+      }
+
+      return {
+        background: `linear-gradient(to right, ${gradientColors})`
+      };
+    },
   }
 }
 </script>
@@ -769,13 +828,17 @@ export default {
   background: linear-gradient(to right, #ff0000, #ffff00, #ffffff, #aaaaff);
 }
 
-.wavelength-gradient {
-  background: linear-gradient(to right, #9900ff, #0000ff, #00ff00, #ffff00, #ff0000);
+.wavelength-bar {
+  position: relative;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
 }
 
 .wavelength-label {
   color: white;
   font-size: 12px;
+  margin: 0 5px;
 }
 
 .wavelength-label.left {
@@ -784,6 +847,45 @@ export default {
 
 .wavelength-label.right {
   float: right;
+}
+
+.gradient-bar {
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.wavelength-gradient {
+  background: linear-gradient(to right, #9900ff, #0000ff, #00ff00, #ffff00, #ff0000);
+  width: 100%;
+}
+
+.wavelength-indicator {
+  position: absolute;
+  width: 3px;
+  height: 15px;
+  background-color: #fff;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.luminance-bar {
+  position: relative;
+  margin-top: 5px;
+}
+
+.luminance-background {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0.2));
+  height: 12px;
+}
+
+.luminance-fill {
+  background: linear-gradient(to right, rgba(100, 100, 100, 0.9), rgba(255, 255, 255, 0.9));
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+  height: 100%;
 }
 
 .progress-bar {

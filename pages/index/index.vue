@@ -3,7 +3,7 @@
     <!-- 顶部工具栏 -->
     <view class="toolbar">
       <view class="toolbar-icons">
-        <view class="icon-item" @click="chooseImage"><uni-icons type="camera" size="24" color="#fff" /></view>
+        <view class="icon-item" @click="chooseImage"> <uni-icons type="camera" size="24" color="#fff" /></view>
         <view class="icon-item"><uni-icons type="color" size="24" color="#fff" /></view>
         <view class="icon-item"><uni-icons type="refresh" size="24" color="#fff" /></view>
         <view class="icon-item"><uni-icons type="filter" size="24" color="#fff" /></view>
@@ -27,8 +27,7 @@
     <view class="color-display" v-if="selectedColor" :style="{ backgroundColor: selectedColor.hex }">
       <text class="color-name" :style="{ color: getContrastColor() }">{{ selectedColor.name }}</text>
       <text class="color-hex" :style="{ color: getContrastColor() }">{{ selectedColor.hex }}</text>
-      <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }" @click="showDetails = !showDetails">
-        <text :style="{ color: getContrastColor() }">{{ showDetails ? '隐藏详情' : '显示详情' }}</text>
+      <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }" @click="showDetails = !showDetails">        <text :style="{ color: getContrastColor() }">{{ showDetails ? '隐藏详情' : '显示详情' }}</text>
       </view>
     </view>
 
@@ -209,6 +208,9 @@ export default {
     }
   },
   onLoad() {
+    // 设置默认图片
+    this.imagePath = '/static/bg/girl.jpg';
+    
     // 从本地存储加载历史记录
     try {
       const history = uni.getStorageSync('colorHistory');
@@ -218,6 +220,15 @@ export default {
     } catch (e) {
       console.error('读取历史记录失败', e);
     }
+    
+    // 等待组件渲染完成后触发颜色提取
+    setTimeout(() => {
+      // 模拟点击中心位置
+      const centerX = this.canvasWidth / 2;
+      const centerY = this.canvasHeight / 2;
+      this.indicatorPosition = { x: centerX, y: centerY };
+      this.extractColorFromImage(centerX, centerY);
+    }, 500);
   },
   methods: {
     // 选择图片

@@ -5,7 +5,7 @@
       <view class="navbar-left" @click="goBack">
         <uni-icons type="left" size="20" :color="getContrastColor()" />
       </view>
-      <view class="navbar-title"> {{ color.name  }}</view>
+      <view class="navbar-title"> {{ color.name }}</view>
       <view class="navbar-right">
         <uni-icons type="share" size="20" style="margin-left: 15px;" />
         <uni-icons type="file" size="20" style="margin-left: 15px;" />
@@ -116,6 +116,10 @@
         </view>
       </view>
     </view>
+
+    <view class="favorite-float-btn" @click="toggleFavorite" :style="{ backgroundColor: color.hex }">
+      <uni-icons :type="isFavorite ? 'star-filled' : 'star'" size="24" :color="getContrastColor()" />
+    </view>
   </view>
 </template>
 
@@ -137,7 +141,9 @@ export default {
       isFullscreen: false,
       showDetails: false,
       percentValue: 100,
-      similarColors: []
+      similarColors: [],
+      isFavorite: false,
+      favoriteColors: []
     }
   },
   onLoad(options) {
@@ -147,6 +153,8 @@ export default {
         this.color = JSON.parse(decodeURIComponent(options.color));
         // 生成相似颜色
         this.generateSimilarColors();
+        // 加载收藏状态
+        this.loadFavoriteColors();
       } catch (e) {
         console.error('解析颜色数据失败', e);
         uni.showToast({
@@ -307,6 +315,55 @@ export default {
       // 亮度阈值，低于此值使用白色文字，高于此值使用黑色文字
       return luminance > 0.5 ? '#000000' : '#ffffff';
     },
+
+    // 加载收藏的颜色
+    loadFavoriteColors() {
+      try {
+        const favorites = uni.getStorageSync('favoriteColors');
+        if (favorites) {
+          this.favoriteColors = JSON.parse(favorites);
+          this.isFavorite = this.favoriteColors.some(item => item.hex === this.color.hex);
+        }
+      } catch (e) {
+        console.error('读取收藏颜色失败', e);
+      }
+    },
+
+    // 切换收藏状态
+    toggleFavorite() {
+      if (this.isFavorite) {
+        // 取消收藏
+        const index = this.favoriteColors.findIndex(item => item.hex === this.color.hex);
+        if (index !== -1) {
+          this.favoriteColors.splice(index, 1);
+        }
+        uni.showToast({
+          title: '已取消收藏',
+          icon: 'none'
+        });
+      } else {
+        // 添加到收藏
+        this.favoriteColors.push(this.color);
+        uni.showToast({
+          title: '已添加到收藏',
+          icon: 'success'
+        });
+      }
+
+      // 更新收藏状态
+      this.isFavorite = !this.isFavorite;
+
+      // 保存到本地存储
+      try {
+        uni.setStorageSync('favoriteColors', JSON.stringify(this.favoriteColors));
+      } catch (e) {
+        console.error('保存收藏失败', e);
+        uni.showToast({
+          title: '操作失败',
+          icon: 'none'
+        });
+      }
+    }
   }
 }
 </script>
@@ -467,5 +524,26 @@ export default {
 .similar-color-percent {
   font-size: 14px;
   color: #666;
+}
+
+.favorite-float-btn {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background-color: #2196F3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.favorite-float-btn:active {
+  transform: translateX(-50%) scale(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

@@ -103,7 +103,7 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  height: 88vh;
+  height: calc(100vh - var(--window-bottom));
   background-color: #f5f5f5;
 }
 

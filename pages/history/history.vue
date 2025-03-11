@@ -280,7 +280,7 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - var(--window-bottom));
   background-color: #f5f5f5;
 }
 
@@ -325,7 +325,7 @@ export default {
 .delete-btn {
   position: absolute;
   top: 5%;
-  right: 85px;
+  right: 100px;
   width: 75px;
   height: 90%;
   border-radius: 24rpx;
@@ -346,12 +346,13 @@ export default {
 .history-item {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 15px 15px 15px 30px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
   z-index: 2;
+  right: 15px;
 }
 
 .color-circle {

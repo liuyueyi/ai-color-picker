@@ -53,8 +53,8 @@
 		}, {
 			"pagePath": "pages/favorite/favorite",
 			"text": "收藏",
-			"iconPath": "static/icons/favorite-normal.png",
-			"selectedIconPath": "static/icons/favorite-active.png"
+			"iconPath": "static/icons/tab-my.png",
+			"selectedIconPath": "static/icons/tab-my-current.png"
 		}]
 	},
 	"uniIdRouter": {}

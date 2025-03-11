@@ -4,10 +4,8 @@
     <view class="toolbar">
       <view class="toolbar-icons">
         <view class="icon-item" @click="chooseImage"> <uni-icons type="camera" size="24" color="#fff" /></view>
-        <view class="icon-item"><uni-icons type="color" size="24" color="#fff" /></view>
-        <view class="icon-item"><uni-icons type="refresh" size="24" color="#fff" /></view>
+        <view class="icon-item" @click="resetImage"><uni-icons type="refresh" size="24" color="#fff" /></view>
         <view class="icon-item"><uni-icons type="filter" size="24" color="#fff" /></view>
-        <view class="icon-item"><uni-icons type="more-filled" size="24" color="#fff" /></view>
       </view>
     </view>
 
@@ -27,7 +25,9 @@
     <view class="color-display" v-if="selectedColor" :style="{ backgroundColor: selectedColor.hex }">
       <text class="color-name" :style="{ color: getContrastColor() }">{{ selectedColor.name }}</text>
       <text class="color-hex" :style="{ color: getContrastColor() }">{{ selectedColor.hex }}</text>
-      <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }" @click="showDetails = !showDetails">        <text :style="{ color: getContrastColor() }">{{ showDetails ? '隐藏详情' : '显示详情' }}</text>
+      <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }"
+        @click="showDetails = !showDetails"> <text :style="{ color: getContrastColor() }">{{ showDetails ? '隐藏详情' :
+          '显示详情' }}</text>
       </view>
     </view>
 
@@ -71,7 +71,6 @@
               <view class="progress-fill luminance-fill" :style="{ width: selectedColor.luminance + '%' }"></view>
             </view>
           </view>
-          <uni-icons type="arrow-up" size="16" color="#fff" />
         </view>
 
         <!-- RGB值 -->
@@ -154,11 +153,9 @@
             <view class="progress-bar">
               <view class="progress-fill hue-gradient"></view>
             </view>
-            <uni-icons type="arrow-up" size="16" color="#fff" />
             <view class="progress-bar">
               <view class="progress-fill saturation-gradient"></view>
             </view>
-            <uni-icons type="arrow-up" size="16" color="#fff" />
           </view>
         </view>
 
@@ -210,7 +207,7 @@ export default {
   onLoad() {
     // 设置默认图片
     this.imagePath = '/static/bg/girl.jpg';
-    
+
     // 从本地存储加载历史记录
     try {
       const history = uni.getStorageSync('colorHistory');
@@ -220,7 +217,7 @@ export default {
     } catch (e) {
       console.error('读取历史记录失败', e);
     }
-    
+
     // 等待组件渲染完成后触发颜色提取
     setTimeout(() => {
       // 模拟点击中心位置
@@ -782,6 +779,17 @@ export default {
       // 根据背景亮度选择半透明的黑色或白色
       return luminance > 0.5 ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)';
     },
+
+    // 重置图片
+    resetImage() {
+      this.imagePath = '';
+      this.selectedColor = null;
+      this.indicatorPosition = { x: 0, y: 0 };
+      this.showDetails = false;
+      this.showNameDialog = false;
+      this.colorNameInput = '';
+    },
+
   }
 }
 </script>

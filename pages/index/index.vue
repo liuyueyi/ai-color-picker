@@ -13,6 +13,7 @@
 
     <!-- 图片区域 -->
     <view class="image-container" v-if="imagePath">
+      <view class="grid-background"></view>
       <image :src="imagePath" mode="aspectFit" @touchstart="pickColor" @touchmove="pickColor"></image>
       <view class="color-picker-indicator"
         :style="{ left: indicatorPosition.x + 'px', top: indicatorPosition.y + 'px' }"></view>
@@ -168,7 +169,7 @@
     </view>
   </view>
   <!-- 隐藏的canvas用于颜色提取 -->
-  <canvas canvas-id="colorPickerCanvas" style="position:absolute; width:100px; height:100px; left:-999px;"></canvas>
+  <canvas canvas-id="colorPickerCanvas" :style="{ position: 'absolute', width: canvasWidth + 'px', height: canvasHeight + 'px', left: '-999px' }"></canvas>
 </template>
 
 <script>
@@ -179,7 +180,9 @@ export default {
       selectedColor: null,
       showDetails: false,
       indicatorPosition: { x: 0, y: 0 },
-      colorHistory: []
+      colorHistory: [],
+      canvasWidth: 100,
+      canvasHeight: 100
     }
   },
   onLoad() {
@@ -208,24 +211,38 @@ export default {
     pickColor(e) {
       // 获取触摸位置
       const touch = e.touches[0];
-      const x = touch.pageX;
-      const y = touch.pageY;
-
-      // 更新指示器位置
-      this.indicatorPosition = { x, y };
-
-      // 使用canvas获取图片像素颜色
-      this.extractColorFromImage(x, y);
+      
+      // 获取图片容器位置信息
+      const query = uni.createSelectorQuery().in(this);
+      query.select('.image-container').boundingClientRect(data => {
+        if (!data) {
+          console.log('未找到图片容器元素');
+          return;
+        }
+        
+        // 计算相对于图片容器的位置
+        const x = touch.pageX - data.left;
+        const y = touch.pageY - data.top;
+        
+        // 更新指示器位置
+        this.indicatorPosition = { x, y };
+        
+        // 使用canvas获取图片像素颜色
+        this.extractColorFromImage(x, y);
+      }).exec();
     },
 
     // 从图片提取颜色
     extractColorFromImage(x, y) {
+      // 转换到正中心的位置
+      // x += 10;
+      // y += 10;
+      console.log('点击提取的位置为：', x, y);
       // 获取图片元素位置信息
       const query = uni.createSelectorQuery().in(this);
       query.select('.image-container img').boundingClientRect(data => {
         if (!data) {
           console.log('未找到图片元素');
-          this.useRandomColor(); // 找不到图片元素时使用随机颜色
           return;
         }
 
@@ -236,6 +253,7 @@ export default {
         const relativeY = y - imgRect.top;
 
         // 确保坐标在图片范围内
+        console.log('相对位置：', relativeX, relativeY, imgRect);
         if (relativeX < 0 || relativeX > imgRect.width || relativeY < 0 || relativeY > imgRect.height) {
           console.log('点击位置不在图片内');
           return;
@@ -245,28 +263,85 @@ export default {
         uni.getImageInfo({
           src: this.imagePath,
           success: imgInfo => {
-            // 计算图片在canvas中的缩放比例
-            const scaleX = imgInfo.width / imgRect.width;
-            const scaleY = imgInfo.height / imgRect.height;
-
-            // 计算实际像素位置
-            const pixelX = Math.floor(relativeX * scaleX);
-            const pixelY = Math.floor(relativeY * scaleY);
-
+            // 设置固定的canvas尺寸
+            this.canvasWidth = 100;
+            this.canvasHeight = 100;
+            
             // 创建临时canvas
             const canvasId = 'colorPickerCanvas';
             const ctx = uni.createCanvasContext(canvasId, this);
+            
+            // 计算图片在容器中的实际显示尺寸和位置
+            // 由于mode="aspectFit"，需要计算图片的实际显示区域
+            let displayWidth, displayHeight, offsetX = 0, offsetY = 0;
+            const containerRatio = imgRect.width / imgRect.height;
+            const imageRatio = imgInfo.width / imgInfo.height;
+            console.log('图片信息：', imgInfo, containerRatio, imageRatio);
+            
+            if (imageRatio > containerRatio) {
+              console.log('宽图流程!')
+              // 图片较宽，宽度撑满容器
+              displayWidth = imgRect.width;
+              displayHeight = displayWidth / imageRatio;
+              offsetY = (imgRect.height - displayHeight) / 2;
+            } else {
+              console.log('高图流程!')
+              // 图片较高，高度撑满容器
+              displayHeight = imgRect.height;
+              displayWidth = displayHeight * imageRatio;
+              offsetX = (imgRect.width - displayWidth) / 2;
+            }
+            console.log('点击图片显示区域:',x, y,  offsetX, offsetY, 'dw=', displayWidth, 'dh=', displayHeight);
 
-            // 绘制图片到canvas
-            ctx.drawImage(this.imagePath, 0, 0, 100, 100);
+            // 修正：计算点击位置相对于图片左上角的偏移
+            // 需要考虑图片在容器中的偏移量
+            const adjustedX = x - offsetX;
+            const adjustedY = y - offsetY;
+            
+            // 检查点击位置是否在图片显示区域内
+            if (adjustedX < 0 || adjustedX > displayWidth || 
+                adjustedY < 0 || adjustedY > displayHeight) {
+              console.log('点击位置不在图片显示区域内', adjustedX, adjustedY, displayWidth, displayHeight);
+              return;
+            }
+            
+            // 计算点击位置在原始图片中的坐标
+            const normalizedX = adjustedX / displayWidth;
+            const normalizedY = adjustedY / displayHeight;
+            const originalX = Math.floor(normalizedX * imgInfo.width);
+            const originalY = Math.floor(normalizedY * imgInfo.height);
+            
+            // 1220, 1784
+            console.log('点击(normalizedX, normalizedY) = ', normalizedX, normalizedY);
+            console.log('调整后的点击位置:', relativeX, relativeY);
+            console.log('点击位置在图片中的坐标:', originalX, originalY);
+            
+            // 在canvas上绘制图片的对应区域
+            // 为了提高精度，我们只绘制点击位置附近的区域
+            const sampleSize = 10; // 采样区域大小
+            const sampleX = Math.max(0, originalX - sampleSize / 2);
+            const sampleY = Math.max(0, originalY - sampleSize / 2);
+            const sampleWidth = Math.min(sampleSize, imgInfo.width - sampleX);
+            const sampleHeight = Math.min(sampleSize, imgInfo.height - sampleY);
+            
+            // 清空canvas
+            ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+            
+            // 绘制采样区域到canvas中心
+            ctx.drawImage(
+              this.imagePath, 
+              sampleX, sampleY, sampleWidth, sampleHeight, // 源图像裁剪区域
+              0, 0, this.canvasWidth, this.canvasHeight // 目标区域
+            );
+            
             ctx.draw(false, () => {
               // 延迟一下确保绘制完成
               setTimeout(() => {
-                // 获取像素数据
+                // 获取像素数据 - 从canvas中心点获取颜色
                 uni.canvasGetImageData({
                   canvasId: canvasId,
-                  x: Math.min(50, Math.max(0, Math.floor(pixelX * 100 / imgInfo.width))),
-                  y: Math.min(50, Math.max(0, Math.floor(pixelY * 100 / imgInfo.height))),
+                  x: Math.floor(this.canvasWidth / 2),
+                  y: Math.floor(this.canvasHeight / 2),
                   width: 1,
                   height: 1,
                   success: res => {
@@ -274,17 +349,17 @@ export default {
                     const r = res.data[0];
                     const g = res.data[1];
                     const b = res.data[2];
-
+                    
                     console.log('提取到的颜色:', r, g, b);
-
+                    
                     // 计算颜色值
                     const hex = this.rgbToHex(r, g, b);
                     const cmyk = this.rgbToCmyk(r, g, b);
                     const hsl = this.rgbToHsl(r, g, b);
-
+                    
                     // 根据颜色值确定颜色名称
                     const name = this.getColorName(r, g, b);
-
+                    
                     // 更新选中的颜色
                     this.selectedColor = {
                       name,
@@ -491,7 +566,7 @@ export default {
 .content {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height:  88vh;
   overflow: hidden; /* 防止整体滚动 */
 }
 
@@ -515,6 +590,24 @@ export default {
   position: relative;
   overflow: hidden;
   min-height: 0; /* 允许容器缩小 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 10px;
+  border-radius: 8px;
+}
+
+
+.grid-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: 20px 20px;
+  background-image:
+    linear-gradient(to right, rgba(200, 200, 200, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
+  pointer-events: none; /* 确保点击事件可以穿透到图片 */
+  z-index: 1;
 }
 
 .image-container image {
@@ -548,46 +641,71 @@ export default {
   transform: translate(-50%, -50%);
   pointer-events: none;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-picker-indicator::before,
+.color-picker-indicator::after {
+  content: '';
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.color-picker-indicator::before {
+  width: 8px;
+  height: 2px;
+}
+
+.color-picker-indicator::after {
+  width: 2px;
+  height: 8px;
 }
 
 .color-display {
+  position: fixed;
+  bottom: calc(24rpx + constant(safe-area-inset-bottom));
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
+  height: 6rem;
+  left: 0;
+  right: 0;
   padding: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
   color: white;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  flex-shrink: 0; /* 防止被压缩 */
-}
-
-.color-name {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.color-hex {
-  font-size: 16px;
-  margin-top: 5px;
+  z-index: 100;
 }
 
 .details-button {
-  margin-top: 10px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background-color: rgba(255, 255, 255, 0.2);
   padding: 5px 15px;
   border-radius: 20px;
 }
 
 .color-details-container {
-  flex: 1;
-  min-height: 0; /* 允许容器缩小 */
-  max-height: 40vh; /* 限制最大高度 */
-  overflow: hidden;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(24rpx + constant(safe-area-inset-bottom) + 6rem);
+  bottom: calc(24rpx + env(safe-area-inset-bottom) + 6rem);
+  max-width: 70vw;
+  max-height: calc(100vh - 280px);
+  z-index: 99;
 }
 
 .color-details {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 15px;
   height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .detail-item {

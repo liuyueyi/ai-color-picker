@@ -1,0 +1,48 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "颜色提取",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/history/history",
+			"style" : {
+				"navigationBarTitleText" : "提取记录",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/detail/detail",
+			"style" : {
+				"navigationBarTitleText" : "颜色详情"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "颜色提取器",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#999999",
+		"selectedColor": "#2196F3",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"text": "颜色提取",
+			"iconPath": "static/icons/color-normal.png",
+			"selectedIconPath": "static/icons/color-active.png"
+		}, {
+			"pagePath": "pages/history/history",
+			"text": "提取记录",
+			"iconPath": "static/icons/history-normal.png",
+			"selectedIconPath": "static/icons/history-active.png"
+		}]
+	},
+	"uniIdRouter": {}
+}

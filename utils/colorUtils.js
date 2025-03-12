@@ -302,4 +302,18 @@ export default class ColorUtils {
         const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
         return luminance > 0.5 ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)';
     }
+
+    // 获取光阴效果的颜色
+    getGlowColor(r, g, b) {
+        // 根据当前颜色生成一个对比色或互补色
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+        if (luminance > 0.5) {
+            // 对于亮色，使用稍微暗一点的同色系
+            return `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.6)`;
+        } else {
+            // 对于暗色，使用稍微亮一点的同色系
+            return `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.6)`;
+        }
+    }
 }

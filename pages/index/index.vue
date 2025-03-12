@@ -185,8 +185,7 @@
             <view class="progress-bar">
               <view class="progress-fill value-gradient"
                 :style="{ background: `linear-gradient(to right, #000000, rgb(250, 190, 144))` }"></view>
-              <view class="hlv-indicator"
-                :style="{ left: selectedColor.hlv.v + '%' }">
+              <view class="hlv-indicator" :style="{ left: selectedColor.hlv.v + '%' }">
               </view>
             </view>
           </view>
@@ -578,7 +577,8 @@ export default {
       if (!this.selectedColor) return {};
 
       // 根据当前颜色调整色温渐变
-      return ColorUtils.getTemperatureGradientStyle(this.selectedColor.rgb)
+      const { r, g, b } = this.selectedColor.rgb;
+      return ColorUtils.getTemperatureGradientStyle(r, g, b)
     },
 
     // 获取波长渐变样式
@@ -589,13 +589,15 @@ export default {
     // 获取与背景色对比的文字颜色
     getContrastColor() {
       if (!this.selectedColor) return '#000000';
-      return ColorUtils.getContrastColor(this.selectedColor.rgb)
+      const { r, g, b } = this.selectedColor.rgb;
+      return ColorUtils.getContrastColor(r, g, b)
     },
 
     // 获取与背景色对比的半透明背景色
     getContrastBackgroundColor() {
       if (!this.selectedColor) return 'rgba(255, 255, 255, 0.2)';
-      return ColorUtils.getContrastBackgroundColor(this.selectedColor.rgb)
+      const { r, g, b } = this.selectedColor.rgb;
+      return ColorUtils.getContrastBackgroundColor(r, g, b)
     },
 
     // 重置图片

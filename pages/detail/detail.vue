@@ -13,11 +13,13 @@
     </view>
 
     <!-- 颜色展示区域 -->
-    <view class="color-display" :class="{ 'fullscreen': isFullscreen }" :style="{ backgroundColor: color.hex }"
+    <view class="color-display" :class="{ 'fullscreen': isFullscreen }"
+      :style="{ backgroundColor: color.hex, boxShadow: isFullscreen ? 'inset 0 0 50px rgba(255, 255, 255, 0.2)' : 'none' }"
       @click="toggleFullscreen">
       <view class="fullscreen-icon" v-if="!isFullscreen">
         <uni-icons type="arrow-up" size="20" color="#fff" />
       </view>
+
     </view>
 
     <!-- 颜色信息 -->
@@ -336,26 +338,13 @@ export default {
     // 获取与背景色对比的文字颜色
     getContrastColor() {
       const { r, g, b } = this.color.rgb;
-      // 计算亮度 (基于人眼对不同颜色的感知)
-      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-      // 亮度阈值，低于此值使用白色文字，高于此值使用黑色文字
-      return luminance > 0.5 ? '#000000' : '#ffffff';
+      return ColorUtils.getContrastColor(r, g, b);
     },
 
     // 获取光阴效果的颜色
     getGlowColor() {
       const { r, g, b } = this.color.rgb;
-      // 根据当前颜色生成一个对比色或互补色
-      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-      if (luminance > 0.5) {
-        // 对于亮色，使用稍微暗一点的同色系
-        return `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.6)`;
-      } else {
-        // 对于暗色，使用稍微亮一点的同色系
-        return `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.6)`;
-      }
+      return ColorUtils.getGlowColor(r, g, b);
     },
   }
 }

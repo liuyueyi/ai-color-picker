@@ -146,11 +146,12 @@
     position: fixed;
     left: 0;
     right: 0;
-    bottom: calc(24rpx + constant(safe-area-inset-bottom) + 6rem);
-    bottom: calc(24rpx + env(safe-area-inset-bottom) + 6rem);
+    bottom: calc(constant(safe-area-inset-bottom) + 6rem);
+    bottom: calc(env(safe-area-inset-bottom) + 6rem);
     max-width: 70vw;
-    max-height: calc(100vh - 280px);
     z-index: 99;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
   }
   
   .color-details {
@@ -339,6 +340,21 @@
     transform: translateY(-80%);
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   }
+
+  .hlv-bars {
+    margin-top: 5px;
+  }
+  
+  .hlv-indicator {
+    position: absolute;
+    width: 3px;
+    height: 15px;
+    background-color: #fff;
+    border-radius: 1px;
+    transform: translateY(-80%);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  }
+  
 
   .lightness-gradient {
     background: linear-gradient(to right, #000000, var(--current-color), #ffffff);

@@ -8,7 +8,7 @@
       <view class="navbar-title"> {{ color.name }}</view>
       <view class="navbar-right">
         <uni-icons type="share" size="20" style="margin-left: 15px;" />
-        <uni-icons type="home" size="20" style="margin-left: 15px;" @click="goHome" />
+        <uni-icons type="home" size="20" :color="getContrastColor()" style="margin-left: 15px;" @click="goHome" />
       </view>
     </view>
 
@@ -23,7 +23,7 @@
     <!-- 颜色信息 -->
     <view class="color-info" v-if="!isFullscreen">
       <view class="color-title">
-        <text>{{ percentValue }}% {{ color.name }}</text>
+        <text>{{ color.hex }} - {{ color.name }}</text>
       </view>
       <view class="color-category">{{ color.category }}</view>
 
@@ -78,6 +78,10 @@
           <view class="detail-item">
             <text>HSL:</text>
             <text>({{ color.hsl.h }}°, {{ color.hsl.s }}%, {{ color.hsl.l }}%)</text>
+          </view>
+          <view class="detail-item">
+            <text>HLV:</text>
+            <text>({{ color.hlv.h }}°, {{ color.hlv.l }}%, {{ color.hlv.v }}%)</text>
           </view>
           <view class="detail-item">
             <text>CMYK:</text>
@@ -230,6 +234,9 @@ export default {
       // 更新HSL
       this.color.hsl = ColorUtils.rgbToHsl(r, g, b);
 
+      // 更新HLV
+      this.color.hlv = ColorUtils.rgbToHlv(r, g, b);
+
       // 更新亮度
       this.color.luminance = Math.floor((r * 0.299 + g * 0.587 + b * 0.114) / 255 * 100);
     },
@@ -325,7 +332,31 @@ export default {
           icon: 'none'
         });
       }
-    }
+    },
+    // 获取与背景色对比的文字颜色
+    getContrastColor() {
+      const { r, g, b } = this.color.rgb;
+      // 计算亮度 (基于人眼对不同颜色的感知)
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+      // 亮度阈值，低于此值使用白色文字，高于此值使用黑色文字
+      return luminance > 0.5 ? '#000000' : '#ffffff';
+    },
+
+    // 获取光阴效果的颜色
+    getGlowColor() {
+      const { r, g, b } = this.color.rgb;
+      // 根据当前颜色生成一个对比色或互补色
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+      if (luminance > 0.5) {
+        // 对于亮色，使用稍微暗一点的同色系
+        return `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 50)}, ${Math.max(0, b - 50)}, 0.6)`;
+      } else {
+        // 对于暗色，使用稍微亮一点的同色系
+        return `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 50)}, ${Math.min(255, b + 50)}, 0.6)`;
+      }
+    },
   }
 }
 </script>

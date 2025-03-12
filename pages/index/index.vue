@@ -10,7 +10,7 @@
     </view>
 
     <!-- 图片区域 -->
-    <view class="image-container" v-if="imagePath" :style="{backgroundColor: selectedColor ? selectedColor.hex : ''}">
+    <view class="image-container" v-if="imagePath" :style="{ backgroundColor: selectedColor ? selectedColor.hex : '' }">
       <view class="grid-background"></view>
       <image :src="imagePath" mode="aspectFit" @touchstart="pickColor" @touchmove="pickColor"></image>
       <view class="color-picker-indicator"
@@ -33,7 +33,7 @@
 
     <!-- 颜色详情区域 -->
     <view class="color-details-container" v-if="showDetails && selectedColor">
-      <scroll-view scroll-y class="color-details">
+      <scroll-view scroll-y class="color-details" :style="{ maxHeight: detailsMaxHeight + 'px' }">
         <!-- 颜色温度 -->
         <view class="detail-item">
           <view class="detail-header">
@@ -159,8 +159,35 @@
               <view class="hsl-indicator" :style="{ left: selectedColor.hsl.s + '%' }"></view>
             </view>
             <view class="progress-bar">
-              <view class="progress-fill lightness-gradient" :style="{ background: `linear-gradient(to right, #000000, #ffffff)`, width:  '100%' }"></view>
+              <view class="progress-fill lightness-gradient"
+                :style="{ background: `linear-gradient(to right, #000000, #ffffff)`, width: '100%' }"></view>
               <view class="hsl-indicator" :style="{ left: selectedColor.hsl.l + '%' }"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- HLV值 -->
+        <view class="detail-item">
+          <view class="detail-header">
+            <text>HLV ({{ selectedColor.hlv.h }}°, {{ selectedColor.hlv.l }}%, {{ selectedColor.hlv.v }}%)</text>
+            <uni-icons type="arrow-up" size="16" color="#fff" />
+          </view>
+          <view class="hlv-bars">
+            <view class="progress-bar">
+              <view class="progress-fill hue-gradient"></view>
+              <view class="hlv-indicator" :style="{ left: (selectedColor.hlv.h / 3.60) + '%' }"></view>
+            </view>
+            <view class="progress-bar">
+              <view class="progress-fill luminance-gradient"
+                :style="{ background: `linear-gradient(to right, #000000, #ffffff)` }"></view>
+              <view class="hlv-indicator" :style="{ left: selectedColor.hlv.l + '%' }"></view>
+            </view>
+            <view class="progress-bar">
+              <view class="progress-fill value-gradient"
+                :style="{ background: `linear-gradient(to right, #000000, rgb(250, 190, 144))` }"></view>
+              <view class="hlv-indicator"
+                :style="{ left: selectedColor.hlv.v + '%' }">
+              </view>
             </view>
           </view>
         </view>
@@ -210,6 +237,7 @@ export default {
       // 新增变量
       showNameDialog: false,
       colorNameInput: '',
+      detailsMaxHeight: 600, // 默认最大高度
     }
   },
   onLoad() {
@@ -226,6 +254,9 @@ export default {
       console.error('读取历史记录失败', e);
     }
 
+    // 计算详情区域最大高度
+    this.calculateDetailsMaxHeight();
+
     // 等待组件渲染完成后触发颜色提取
     setTimeout(() => {
       // 模拟点击中心位置
@@ -236,6 +267,13 @@ export default {
     }, 500);
   },
   methods: {
+    // 计算详情区域最大高度
+    calculateDetailsMaxHeight() {
+      const systemInfo = uni.getSystemInfoSync();
+      const windowHeight = systemInfo.windowHeight;
+      // 预留底部颜色显示区域的高度（约6rem）和顶部工具栏高度
+      this.detailsMaxHeight = windowHeight - 180; // 根据实际情况调整
+    },
     // 选择图片
     chooseImage() {
       uni.chooseImage({
@@ -393,6 +431,7 @@ export default {
                     const hex = this.rgbToHex(r, g, b);
                     const cmyk = this.rgbToCmyk(r, g, b);
                     const hsl = this.rgbToHsl(r, g, b);
+                    const hlv = this.rgbToHlv(r, g, b);
 
                     // 根据颜色值确定颜色名称
                     const name = this.getColorName(r, g, b);
@@ -404,6 +443,7 @@ export default {
                       rgb: { r, g, b },
                       cmyk,
                       hsl,
+                      hlv,
                       temperature: this.calculateColorTemperature(r, g, b),
                       wavelength: this.calculateDominantWavelength(r, g, b),
                       luminance: Math.floor((r * 0.299 + g * 0.587 + b * 0.114) / 255 * 100)
@@ -453,6 +493,10 @@ export default {
     // RGB转HSL
     rgbToHsl(r, g, b) {
       return ColorUtils.rgbToHsl(r, g, b);
+    },
+
+    rgbToHlv(r, g, b) {
+      return ColorUtils.rgbToHlv(r, g, b);
     },
 
     // 获取颜色名称 (增强版)

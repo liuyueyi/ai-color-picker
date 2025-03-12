@@ -203,10 +203,10 @@ export default {
       // 限制只能左滑
       if (moveX > 0) {
         this.$set(this.colorHistory[index], 'offset', 0);
-        const deleteBtn = event.currentTarget.querySelector('.delete-btn');
-        if (deleteBtn) {
-          deleteBtn.style.transform = `translateX(${this.deleteButtonWidth}px)`;
-        }
+        // const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+        // if (deleteBtn) {
+        //   deleteBtn.style.transform = `translateX(${this.deleteButtonWidth}px)`;
+        // }
         return;
       }
 
@@ -214,36 +214,36 @@ export default {
       const offset = Math.max(-this.deleteButtonWidth, Math.min(0, moveX));
       this.$set(this.colorHistory[index], 'offset', offset);
 
-      // 同步更新删除按钮的位置
-      const deleteBtn = event.currentTarget.querySelector('.delete-btn');
-      if (deleteBtn) {
-        deleteBtn.style.transform = `translateX(${this.deleteButtonWidth + offset}px)`;
-      }
+      // // 同步更新删除按钮的位置
+      // const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+      // if (deleteBtn) {
+      //   deleteBtn.style.transform = `translateX(${this.deleteButtonWidth + offset}px)`;
+      // }
     },
 
     // 触摸结束
     touchEnd(event, index) {
       if (this.currentIndex !== index) return;
       
-      const item = this.colorHistory[index];
-      const offset = item.offset || 0;
+      // const item = this.colorHistory[index];
+      // const offset = item.offset || 0;
       
-      // 根据滑动距离决定是否显示删除按钮
-      if (Math.abs(offset) > this.deleteButtonWidth / 2) {
-        this.$set(this.colorHistory[index], 'offset', -this.deleteButtonWidth);
-        const deleteBtn = event.currentTarget.querySelector('.delete-btn');
-        if (deleteBtn) {
-          deleteBtn.style.transform = `translateX(0)`;
-        }
-      } else {
-        this.$set(this.colorHistory[index], 'offset', 0);
-        const deleteBtn = event.currentTarget.querySelector('.delete-btn');
-        if (deleteBtn) {
-          deleteBtn.style.transform = `translateX(${this.deleteButtonWidth}px)`;
-        }
-      }
+      // // 根据滑动距离决定是否显示删除按钮
+      // if (Math.abs(offset) > this.deleteButtonWidth / 2) {
+      //   this.$set(this.colorHistory[index], 'offset', -this.deleteButtonWidth);
+      //   const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+      //   if (deleteBtn) {
+      //     deleteBtn.style.transform = `translateX(0)`;
+      //   }
+      // } else {
+      //   this.$set(this.colorHistory[index], 'offset', 0);
+      //   const deleteBtn = event.currentTarget.querySelector('.delete-btn');
+      //   if (deleteBtn) {
+      //     deleteBtn.style.transform = `translateX(${this.deleteButtonWidth}px)`;
+      //   }
+      // }
       
-      this.currentIndex = -1;
+      // this.currentIndex = -1;
     },
 
     // 删除单个历史记录

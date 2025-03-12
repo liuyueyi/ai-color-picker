@@ -8,7 +8,7 @@
       <view class="navbar-title"> {{ color.name }}</view>
       <view class="navbar-right">
         <uni-icons type="share" size="20" style="margin-left: 15px;" />
-        <uni-icons type="file" size="20" style="margin-left: 15px;" />
+        <uni-icons type="home" size="20" style="margin-left: 15px;" @click="goHome" />
       </view>
     </view>
 
@@ -62,7 +62,7 @@
       <!-- 详细信息 -->
       <view class="details-section">
         <view class="details-header" @click="toggleDetails">
-          <text>Details</text>
+          <text style="font-weight: bold;">Details</text>
           <uni-icons :type="showDetails ? 'arrow-down' : 'arrow-right'" size="16" color="#666" />
         </view>
 
@@ -124,6 +124,8 @@
 </template>
 
 <script>
+import ColorUtils from '../../utils/colorUtils.js';
+
 export default {
   data() {
     return {
@@ -169,6 +171,23 @@ export default {
     goBack() {
       uni.navigateBack();
     },
+    goHome() {
+      // 返回主页
+      // 返回主页
+      uni.reLaunch({
+        url: '/pages/index/index',
+        success: () => {
+          console.log('成功返回主页');
+        },
+        fail: (err) => {
+          console.error('返回主页失败', err);
+          uni.showToast({
+            title: '返回主页失败',
+            icon: 'none'
+          });
+        }
+      });
+    },
 
     // 切换全屏显示
     toggleFullscreen() {
@@ -203,74 +222,17 @@ export default {
       const { r, g, b } = this.color.rgb;
 
       // 更新HEX
-      this.color.hex = this.rgbToHex(r, g, b);
+      this.color.hex = ColorUtils.rgbToHex(r, g, b);
 
       // 更新CMYK
-      this.color.cmyk = this.rgbToCmyk(r, g, b);
+      this.color.cmyk = ColorUtils.rgbToCmyk(r, g, b);
 
       // 更新HSL
-      this.color.hsl = this.rgbToHsl(r, g, b);
+      this.color.hsl = ColorUtils.rgbToHsl(r, g, b);
 
       // 更新亮度
       this.color.luminance = Math.floor((r * 0.299 + g * 0.587 + b * 0.114) / 255 * 100);
     },
-
-    // RGB转HEX
-    rgbToHex(r, g, b) {
-      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-    },
-
-    // RGB转CMYK
-    rgbToCmyk(r, g, b) {
-      let c = 1 - (r / 255);
-      let m = 1 - (g / 255);
-      let y = 1 - (b / 255);
-      let k = Math.min(c, m, y);
-
-      if (k === 1) {
-        return { c: 0, m: 0, y: 0, k: 100 };
-      }
-
-      c = Math.round(((c - k) / (1 - k)) * 100);
-      m = Math.round(((m - k) / (1 - k)) * 100);
-      y = Math.round(((y - k) / (1 - k)) * 100);
-      k = Math.round(k * 100);
-
-      return { c, m, y, k };
-    },
-
-    // RGB转HSL
-    rgbToHsl(r, g, b) {
-      r /= 255;
-      g /= 255;
-      b /= 255;
-
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      let h, s, l = (max + min) / 2;
-
-      if (max === min) {
-        h = s = 0;
-      } else {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-        switch (max) {
-          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-          case g: h = (b - r) / d + 2; break;
-          case b: h = (r - g) / d + 4; break;
-        }
-
-        h /= 6;
-      }
-
-      return {
-        h: Math.round(h * 360),
-        s: Math.round(s * 100),
-        l: Math.round(l * 100)
-      };
-    },
-
     // 生成相似颜色
     generateSimilarColors() {
       const { r, g, b } = this.color.rgb;
@@ -303,7 +265,7 @@ export default {
       const newR = Math.max(0, Math.min(255, r + dr));
       const newG = Math.max(0, Math.min(255, g + dg));
       const newB = Math.max(0, Math.min(255, b + db));
-      return this.rgbToHex(newR, newG, newB);
+      return ColorUtils.rgbToHex(newR, newG, newB);
     },
 
     // 获取与背景色对比的文字颜色
@@ -369,181 +331,5 @@ export default {
 </script>
 
 <style>
-.container {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - var(--status-bar-height));
-  background-color: #f5f5f5;
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: var(--color-hex);
-  color: white;
-  padding: 10px 15px;
-  height: 50px;
-}
-
-.navbar-left,
-.navbar-right {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.color-display {
-  height: 200px;
-  position: relative;
-}
-
-.color-display.fullscreen {
-  height: calc(100vh - var(--status-bar-height) - 50px);
-}
-
-.fullscreen-icon {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-}
-
-.color-info {
-  flex: 1;
-  padding: 15px;
-  background-color: white;
-}
-
-.color-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.color-category {
-  font-size: 14px;
-  color: #666;
-  margin-top: 5px;
-}
-
-.divider {
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 15px 0;
-}
-
-.color-sliders {
-  margin-top: 10px;
-}
-
-.slider-item {
-  margin-bottom: 15px;
-}
-
-.slider-label {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-
-.details-section {
-  margin-top: 10px;
-}
-
-.details-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-}
-
-.details-content {
-  margin-top: 10px;
-}
-
-.detail-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.similar-color-list {
-  margin-top: 10px;
-}
-
-.similar-color-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.similar-color-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  margin-right: 15px;
-}
-
-.similar-color-info {
-  flex: 1;
-}
-
-.similar-color-name {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.similar-color-hex {
-  font-size: 12px;
-  color: #666;
-}
-
-.similar-color-category {
-  font-size: 12px;
-  color: #999;
-}
-
-.similar-color-percent {
-  font-size: 14px;
-  color: #666;
-}
-
-.favorite-float-btn {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 56px;
-  height: 56px;
-  border-radius: 28px;
-  background-color: #2196F3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.favorite-float-btn:active {
-  transform: translateX(-50%) scale(0.95);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+@import './detail.css';
 </style>

@@ -2,9 +2,10 @@
   <view class="container">
     <!-- 顶部导航栏 -->
     <view class="navbar">
-      <view class="navbar-title">收藏的颜色</view>
+      <view class="navbar-left"></view>
+      <view class="navbar-title">Favorite Color</view>
       <view class="navbar-right">
-        <uni-icons type="more-filled" size="20" color="#fff" />
+        <!-- <uni-icons type="more-filled" size="20" color="#fff" /> -->
       </view>
     </view>
 
@@ -111,7 +112,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #2196F3;
+  background-color: #333;
   color: white;
   padding: 10px 15px;
   height: 50px;

@@ -9,7 +9,7 @@
 
 /* 工具栏样式 */
 .toolbar {
-    background-color: #2196F3;
+    background-color: #333;
     padding: 10px;
     flex-shrink: 0;
     /* 防止工具栏被压缩 */
@@ -17,7 +17,7 @@
 
 .toolbar-icons {
     display: flex;
-    justify-content: space-around;
+    justify-content: right;
 }
 
 .icon-item {

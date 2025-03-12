@@ -282,13 +282,14 @@ export default {
   flex-direction: column;
   height: calc(100vh - var(--window-bottom));
   background-color: #f5f5f5;
+  padding-bottom: 2rem;
 }
 
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #2196F3;
+  background-color: #333;
   color: white;
   padding: 10px 15px;
   height: 50px;

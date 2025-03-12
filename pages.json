@@ -42,17 +42,17 @@
 		"borderStyle": "black",
 		"list": [{
 			"pagePath": "pages/index/index",
-			"text": "颜色提取",
+			"text": "Picker",
 			"iconPath": "static/icons/color-normal.png",
 			"selectedIconPath": "static/icons/color-active.png"
 		}, {
 			"pagePath": "pages/history/history",
-			"text": "提取记录",
+			"text": "Record",
 			"iconPath": "static/icons/history-normal.png",
 			"selectedIconPath": "static/icons/history-active.png"
 		}, {
 			"pagePath": "pages/favorite/favorite",
-			"text": "收藏",
+			"text": "Favorite",
 			"iconPath": "static/icons/tab-my.png",
 			"selectedIconPath": "static/icons/tab-my-current.png"
 		}]

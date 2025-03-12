@@ -160,11 +160,11 @@
     position: fixed;
     left: 0;
     right: 0;
-    /* #ifdef APP-ANDROID */
+    /* #ifdef APP-PLUS */
     bottom: calc(constant(safe-area-inset-bottom) + 4.5rem);
     bottom: calc(env(safe-area-inset-bottom) + 4.5rem);
     /* #endif */
-    /* #ifndef APP-ANDROID */
+    /* #ifndef APP-PLUS */
     bottom: calc(constant(safe-area-inset-bottom) + 6rem);
     bottom: calc(env(safe-area-inset-bottom) + 6rem);
     /* #endif */

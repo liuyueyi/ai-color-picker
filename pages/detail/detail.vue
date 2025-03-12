@@ -175,19 +175,6 @@ export default {
     }
   },
   onReady() {
-    // uni.setNavigationBarTitle({
-    //   title: this.color.name
-    // });
-
-    // uni.setNavigationBarColor({
-    //   backgroundColor: this.color.hex,
-    //   frontColor: this.getContrastColor(),
-    //   animation: {
-    //     duration: 200,
-    //     timingFunc: 'easeIn'
-    //   }
-    // });
-
     // #ifdef APP-PLUS
     // 隐藏系统状态栏
     plus.navigator.setStatusBarBackground(this.color.hex);

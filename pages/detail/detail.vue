@@ -1,8 +1,7 @@
 <template>
   <view class="container">
     <!-- 顶部导航栏 -->
-    <!-- #ifndef APP-PLUS -->
-    <view class="navbar" :style="{ backgroundColor: color.hex, color: getContrastColor() }">
+    <view class="navbar" :style="{ backgroundColor: color.hex, color: getContrastColor() }" v-if="!isFullscreen">
       <view class="navbar-left" @click="goBack">
         <uni-icons type="left" size="20" :color="getContrastColor()" />
       </view>
@@ -12,7 +11,6 @@
         <uni-icons type="home" size="20" :color="getContrastColor()" style="margin-left: 15px;" @click="goHome" />
       </view>
     </view>
-    <!-- #endif -->
 
     <!-- 颜色展示区域 -->
     <view class="color-display" :class="{ 'fullscreen': isFullscreen }"
@@ -172,26 +170,63 @@ export default {
           icon: 'none'
         });
       }
+
+      this.hideNav();
     }
   },
+  onUnload() {
+    this.showNav();
+  },
   onReady() {
+    // uni.setNavigationBarTitle({
+    //   title: this.color.name
+    // });
+
+    // uni.setNavigationBarColor({
+    //   backgroundColor: this.color.hex,
+    //   frontColor: this.getContrastColor(),
+    //   animation: {
+    //     duration: 200,
+    //     timingFunc: 'easeIn'
+    //   }
+    // });
+
+    this.hideNav()
     // #ifdef APP-PLUS
-    // 隐藏系统状态栏
-    plus.navigator.setStatusBarBackground(this.color.hex);
-    plus.navigator.setNavigationBarColor(this.color.hex);
-    uni.setNavigationBarColor({
-      backgroundColor: this.color.hex,
-      frontColor: this.getContrastColor(),
-      animation: {
-        duration: 200,
-        timingFunc: 'easeIn'
-      }
-    });
-    // 设置底部手势区域颜色
-    plus.navigator.setFullscreenNavigationBarColor(this.color.hex);
+    // // 隐藏系统状态栏
+    // plus.navigator.setStatusBarBackground(this.color.hex);
+    // plus.navigator.setNavigationBarColor(this.color.hex);
+    // uni.setNavigationBarColor({
+    //   backgroundColor: this.color.hex,
+    //   frontColor: this.getContrastColor(),
+    //   animation: {
+    //     duration: 200,
+    //     timingFunc: 'easeIn'
+    //   }
+    // });
+    // // 设置底部手势区域颜色
+    // plus.navigator.setFullscreenNavigationBarColor(this.color.hex);
     // #endif
   },
   methods: {
+    hideNav() {
+      // #ifdef APP-PLUS
+      plus.navigator.setFullscreen(true); // 隐藏状态栏
+      plus.navigator.hideSystemNavigation(); // 隐藏虚拟按键
+      plus.navigator.setStatusBarBackground(this.color.hex); // 设置状态栏背景色
+      plus.navigator.setNavigationBarColor(this.color.hex); // 设置导航栏背景色
+      plus.navigator.setFullscreenNavigationBarColor(this.color.hex); // 设置底部手势区域颜色
+      // #endif
+    },
+    showNav() {
+      // #ifdef APP-PLUS
+      plus.navigator.setFullscreen(false); // 隐藏状态栏
+      plus.navigator.showSystemNavigation(); // 隐藏虚拟按键
+      plus.navigator.setStatusBarBackground(this.color.hex); // 恢复状态栏背景色
+      plus.navigator.setNavigationBarColor(this.color.hex); // 恢复导航栏背景色
+      plus.navigator.setFullscreenNavigationBarColor(this.color.hex); // 恢复底部手势区域颜色
+      // #endif
+    },
     // 返回上一页
     goBack() {
       uni.navigateBack();
@@ -217,6 +252,11 @@ export default {
     // 切换全屏显示
     toggleFullscreen() {
       this.isFullscreen = !this.isFullscreen;
+      if (this.isFullscreen) {
+        this.hideNav()
+      } else {
+        this.showNav()
+      }
     },
 
     // 切换详情显示

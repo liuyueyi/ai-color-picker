@@ -7,7 +7,7 @@
       </view>
       <view class="navbar-title">History</view>
       <view class="navbar-right">
-        <uni-icons type="trash" size="20" color="#fff" @click="showDeleteConfirm" />
+        <uni-icons type="trash" size="20" color="#333" @click="showDeleteConfirm" />
         <!-- 待添加一个分组检索功能 -->
         <!-- <uni-icons type="more-filled" size="20" color="#fff" style="margin-left: 15px;" /> -->
       </view>

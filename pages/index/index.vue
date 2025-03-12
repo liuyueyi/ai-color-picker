@@ -3,8 +3,8 @@
     <!-- 顶部工具栏 -->
     <view class="toolbar">
       <view class="toolbar-icons">
-        <view class="icon-item" @click="chooseImage"> <uni-icons type="camera" size="24" color="#fff" /></view>
-        <view class="icon-item" @click="resetImage"><uni-icons type="refresh" size="24" color="#fff" /></view>
+        <view class="icon-item" @click="chooseImage"> <uni-icons type="camera" size="24" color="#333" /></view>
+        <view class="icon-item" @click="resetImage"><uni-icons type="refresh" size="24" color="#333" /></view>
         <view class="icon-item"><uni-icons type="filter" size="24" color="#fff" /></view>
       </view>
     </view>
@@ -22,6 +22,9 @@
     </view>
     <!-- 颜色显示区域 -->
     <view class="color-display" v-if="selectedColor" :style="{ backgroundColor: selectedColor.hex }">
+      <view class="details-save-button" :style="{ backgroundColor: getContrastBackgroundColor() }" @click="saveColor">
+        <text :style="{ color: getContrastColor() }">保存</text>
+      </view>
       <text class="color-name" :style="{ color: getContrastColor() }">{{ selectedColor.name }}</text>
       <text class="color-hex" :style="{ color: getContrastColor() }">{{ selectedColor.hex }}</text>
       <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }"
@@ -191,9 +194,9 @@
         </view>
 
         <!-- 保存按钮 -->
-        <view class="save-button" @click="saveColor">
+        <!-- <view class="save-button" @click="saveColor">
           <text>保存颜色</text>
-        </view>
+        </view> -->
       </scroll-view>
     </view>
   </view>

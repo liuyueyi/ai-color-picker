@@ -189,6 +189,8 @@
 </template>
 
 <script>
+import ColorUtils from '../../utils/colorUtils.js';
+
 export default {
   data() {
     return {
@@ -307,22 +309,20 @@ export default {
             let displayWidth, displayHeight, offsetX = 0, offsetY = 0;
             const containerRatio = imgRect.width / imgRect.height;
             const imageRatio = imgInfo.width / imgInfo.height;
-            console.log('图片信息：', imgInfo, containerRatio, imageRatio);
+            // console.log('图片信息：', imgInfo, containerRatio, imageRatio);
 
             if (imageRatio > containerRatio) {
-              console.log('宽图流程!')
               // 图片较宽，宽度撑满容器
               displayWidth = imgRect.width;
               displayHeight = displayWidth / imageRatio;
               offsetY = (imgRect.height - displayHeight) / 2;
             } else {
-              console.log('高图流程!')
               // 图片较高，高度撑满容器
               displayHeight = imgRect.height;
               displayWidth = displayHeight * imageRatio;
               offsetX = (imgRect.width - displayWidth) / 2;
             }
-            console.log('点击图片显示区域:', x, y, offsetX, offsetY, 'dw=', displayWidth, 'dh=', displayHeight);
+            // console.log('点击图片显示区域:', x, y, offsetX, offsetY, 'dw=', displayWidth, 'dh=', displayHeight);
 
             // 修正：计算点击位置相对于图片左上角的偏移
             // 需要考虑图片在容器中的偏移量
@@ -343,9 +343,9 @@ export default {
             const originalY = Math.floor(normalizedY * imgInfo.height);
 
             // 1220, 1784
-            console.log('点击(normalizedX, normalizedY) = ', normalizedX, normalizedY);
-            console.log('调整后的点击位置:', relativeX, relativeY);
-            console.log('点击位置在图片中的坐标:', originalX, originalY);
+            // console.log('点击(normalizedX, normalizedY) = ', normalizedX, normalizedY);
+            // console.log('调整后的点击位置:', relativeX, relativeY);
+            // console.log('点击位置在图片中的坐标:', originalX, originalY);
 
             // 在canvas上绘制图片的对应区域
             // 为了提高精度，我们只绘制点击位置附近的区域
@@ -381,7 +381,7 @@ export default {
                     const g = res.data[1];
                     const b = res.data[2];
 
-                    console.log('提取到的颜色:', r, g, b);
+                    // console.log('提取到的颜色:', r, g, b);
 
                     // 计算颜色值
                     const hex = this.rgbToHex(r, g, b);
@@ -405,222 +405,53 @@ export default {
                   },
                   fail: err => {
                     console.error('获取像素颜色失败:', err);
-                    this.useRandomColor(); // 获取像素失败时使用随机颜色
+                    uni.showToast({
+                      title: '颜色提取失败，重新再试试吧',
+                      icon: 'error'
+                    });
                   }
                 });
               }, 200);
             });
           },
           fail: err => {
-            console.error('获取图片信息失败:', err);
-            this.useRandomColor(); // 获取图片信息失败时使用随机颜色
+            uni.showToast({
+              title: '颜色提取失败，重新再试试吧',
+              icon: 'error'
+            });
           }
         });
       }).exec();
     },
 
-    // 使用随机颜色（作为备选方案）
-    useRandomColor() {
-      const r = Math.floor(Math.random() * 200 + 55);
-      const g = Math.floor(Math.random() * 150 + 50);
-      const b = Math.floor(Math.random() * 100);
-
-      // 计算颜色值
-      const hex = this.rgbToHex(r, g, b);
-      const cmyk = this.rgbToCmyk(r, g, b);
-      const hsl = this.rgbToHsl(r, g, b);
-
-      // 根据颜色值确定颜色名称
-      const name = this.getColorName(r, g, b);
-
-      // 更新选中的颜色
-      this.selectedColor = {
-        name,
-        hex,
-        rgb: { r, g, b },
-        cmyk,
-        hsl,
-        temperature: this.calculateColorTemperature(r, g, b),
-        wavelength: this.calculateDominantWavelength(r, g, b),
-        luminance: Math.floor((r * 0.299 + g * 0.587 + b * 0.114) / 255 * 100)
-      };
-    },
-
     // 计算色温（简化版）
     calculateColorTemperature(r, g, b) {
-      // 简化的色温计算，基于RGB值
-      // 实际应用中可能需要更复杂的算法
-      const ratio = r / (b || 1); // 避免除以0
-
-      if (ratio > 1.5) {
-        return Math.floor(2000 + ratio * 500); // 偏暖色
-      } else if (ratio < 0.8) {
-        return Math.floor(6500 + (1 - ratio) * 3000); // 偏冷色
-      } else {
-        return 6500; // 中性色温
-      }
+      return ColorUtils.calculateColorTemperature(r, g, b);
     },
 
     // 计算主波长（简化版）
     calculateDominantWavelength(r, g, b) {
-      // 简化的主波长计算
-      // 实际应用中可能需要更复杂的算法
-      const max = Math.max(r, g, b);
-
-      if (r === max) {
-        return Math.floor(620 - (g / 255) * 40); // 红色区域: 580-620nm
-      } else if (g === max) {
-        return Math.floor(565 - (b / 255) * 65); // 绿色区域: 500-565nm
-      } else {
-        return Math.floor(450 + (r / 255) * 30); // 蓝色区域: 450-480nm
-      }
+      return ColorUtils.calculateDominantWavelength(r, g, b);
     },
-
 
     // RGB转HEX
     rgbToHex(r, g, b) {
-      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+      return ColorUtils.rgbToHex(r, g, b);
     },
 
     // RGB转CMYK
     rgbToCmyk(r, g, b) {
-      let c = 1 - (r / 255);
-      let m = 1 - (g / 255);
-      let y = 1 - (b / 255);
-      let k = Math.min(c, m, y);
-
-      if (k === 1) {
-        return { c: 0, m: 0, y: 0, k: 100 };
-      }
-
-      c = Math.round(((c - k) / (1 - k)) * 100);
-      m = Math.round(((m - k) / (1 - k)) * 100);
-      y = Math.round(((y - k) / (1 - k)) * 100);
-      k = Math.round(k * 100);
-
-      return { c, m, y, k };
+      return ColorUtils.rgbToCmyk(r, g, b);
     },
 
     // RGB转HSL
     rgbToHsl(r, g, b) {
-      r /= 255;
-      g /= 255;
-      b /= 255;
-
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      let h, s, l = (max + min) / 2;
-
-      if (max === min) {
-        h = s = 0;
-      } else {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-        switch (max) {
-          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-          case g: h = (b - r) / d + 2; break;
-          case b: h = (r - g) / d + 4; break;
-        }
-
-        h /= 6;
-      }
-
-      return {
-        h: Math.round(h * 360),
-        s: Math.round(s * 100),
-        l: Math.round(l * 100)
-      };
+      return ColorUtils.rgbToHsl(r, g, b);
     },
 
     // 获取颜色名称 (增强版)
     getColorName(r, g, b) {
-      // 计算HSL值用于更精确的颜色判断
-      const hsl = this.rgbToHsl(r, g, b);
-      const h = hsl.h; // 色相
-      const s = hsl.s; // 饱和度
-      const l = hsl.l; // 亮度
-
-      // 灰度系列
-      if (s < 10) {
-        if (l < 15) return '黑色 (Black)';
-        if (l < 30) return '深灰 (Dark Gray)';
-        if (l < 50) return '灰色 (Gray)';
-        if (l < 70) return '浅灰 (Light Gray)';
-        if (l < 85) return '银色 (Silver)';
-        return '白色 (White)';
-      }
-
-      // 根据色相判断基本颜色
-      if (h >= 0 && h < 15 || h >= 345 && h <= 360) {
-        if (l < 20) return '深红 (Dark Red)';
-        if (l < 40) return '红色 (Red)';
-        if (l < 60) return '鲜红 (Bright Red)';
-        return '浅红 (Light Red)';
-      }
-
-      if (h >= 15 && h < 40) {
-        if (l < 30) return '棕色 (Brown)';
-        if (l < 50) return '橙色 (Orange)';
-        if (s > 80) return '金色 (Gold)';
-        return '橘黄 (Orange Yellow)';
-      }
-
-      if (h >= 40 && h < 70) {
-        if (l < 30) return '橄榄 (Olive)';
-        if (l < 50) return '黄色 (Yellow)';
-        if (l < 70) return '鲜黄 (Bright Yellow)';
-        return '浅黄 (Light Yellow)';
-      }
-
-      if (h >= 70 && h < 150) {
-        if (l < 20) return '深绿 (Dark Green)';
-        if (l < 40) return '绿色 (Green)';
-        if (h < 100) return '黄绿 (Yellow Green)';
-        if (h > 120) return '青绿 (Teal)';
-        return '鲜绿 (Bright Green)';
-      }
-
-      if (h >= 150 && h < 200) {
-        if (l < 20) return '深青 (Dark Cyan)';
-        if (l < 40) return '青色 (Cyan)';
-        if (l < 60) return '湖蓝 (Turquoise)';
-        return '浅青 (Light Cyan)';
-      }
-
-      if (h >= 200 && h < 260) {
-        if (l < 20) return '深蓝 (Dark Blue)';
-        if (l < 40) return '蓝色 (Blue)';
-        if (l < 60) return '天蓝 (Sky Blue)';
-        return '浅蓝 (Light Blue)';
-      }
-
-      if (h >= 260 && h < 285) {
-        if (l < 20) return '深紫 (Dark Purple)';
-        if (l < 40) return '紫色 (Purple)';
-        if (l < 60) return '鲜紫 (Bright Purple)';
-        return '浅紫 (Light Purple)';
-      }
-
-      if (h >= 285 && h < 345) {
-        if (l < 20) return '深粉 (Dark Pink)';
-        if (l < 40) return '品红 (Magenta)';
-        if (l < 60) return '粉红 (Pink)';
-        return '浅粉 (Light Pink)';
-      }
-
-      // 特殊颜色判断
-      if (r > 150 && g > 100 && b > 50 && r > g && g > b) {
-        if (l < 40) return '铜色 (Copper)';
-        return '古铜 (Bronze)';
-      }
-
-      if (Math.abs(r - g) < 10 && Math.abs(g - b) < 10 && Math.abs(r - b) < 10) {
-        return '中性灰 (Neutral Gray)';
-      }
-
-      // 默认返回
-      return '未知 (Unknown)';
+      return ColorUtils.getColorName(r, g, b);
     },
 
     // 保存颜色到历史记录
@@ -685,99 +516,36 @@ export default {
     // 计算色温指示器位置
     calculateTemperaturePosition() {
       if (!this.selectedColor) return 0;
-
-      // 色温范围从2000K到10000K
-      const minTemp = 2000;
-      const maxTemp = 10000;
-      const temp = this.selectedColor.temperature;
-
-      // 将色温值映射到0-100的范围
-      let position = ((temp - minTemp) / (maxTemp - minTemp)) * 100;
-
-      // 限制在0-100范围内
-      position = Math.max(0, Math.min(100, position));
-
-      return position;
+      return ColorUtils.calculateTemperaturePosition(this.selectedColor.temperature)
     },
     // 计算波长指示器位置
     calculateWavelengthPosition() {
       if (!this.selectedColor) return 0;
-
-      // 可见光波长范围约为380nm到780nm
-      const minWavelength = 380;
-      const maxWavelength = 780;
-      const wavelength = this.selectedColor.wavelength;
-
-      // 将波长值映射到0-100的范围
-      let position = ((wavelength - minWavelength) / (maxWavelength - minWavelength)) * 100;
-
-      // 限制在0-100范围内
-      position = Math.max(0, Math.min(100, position));
-
-      return position;
+      return ColorUtils.calculateWavelengthPosition(this.selectedColor.wavelength)
     },
     // 获取色温渐变样式
     getTemperatureGradientStyle() {
       if (!this.selectedColor) return {};
 
       // 根据当前颜色调整色温渐变
-      const { r, g, b } = this.selectedColor.rgb;
-      const warmColor = `rgb(${Math.min(r + 50, 255)}, ${Math.min(g + 30, 255)}, ${Math.max(b - 50, 0)})`;
-      const coolColor = `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 20, 0)}, ${Math.min(b + 50, 255)})`;
-
-      return {
-        background: `linear-gradient(to right, ${warmColor}, #ffff00, #ffffff, ${coolColor})`
-      };
+      return ColorUtils.getTemperatureGradientStyle(this.selectedColor.rgb)
     },
 
     // 获取波长渐变样式
     getWavelengthGradientStyle() {
       if (!this.selectedColor) return {};
-
-      // 根据当前颜色调整波长渐变
-      const { r, g, b } = this.selectedColor.rgb;
-      const dominantColor = this.selectedColor.hex;
-
-      // 根据主波长位置确定渐变
-      const position = this.calculateWavelengthPosition();
-      let gradientColors;
-
-      if (position < 33) {
-        // 偏紫蓝色区域
-        gradientColors = `#9900ff, #0000ff, ${dominantColor}, #00ff00, #ffff00, #ff0000`;
-      } else if (position < 66) {
-        // 偏绿黄色区域
-        gradientColors = `#9900ff, #0000ff, #00ff00, ${dominantColor}, #ffff00, #ff0000`;
-      } else {
-        // 偏红色区域
-        gradientColors = `#9900ff, #0000ff, #00ff00, #ffff00, ${dominantColor}, #ff0000`;
-      }
-
-      return {
-        background: `linear-gradient(to right, ${gradientColors})`
-      };
+      return ColorUtils.getWavelengthGradientStyle(this.selectedColor.hex, this.selectedColor.wavelength)
     },
     // 获取与背景色对比的文字颜色
     getContrastColor() {
       if (!this.selectedColor) return '#000000';
-
-      const { r, g, b } = this.selectedColor.rgb;
-      // 计算亮度 (基于人眼对不同颜色的感知)
-      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-      // 亮度阈值，低于此值使用白色文字，高于此值使用黑色文字
-      return luminance > 0.5 ? '#000000' : '#ffffff';
+      return ColorUtils.getContrastColor(this.selectedColor.rgb)
     },
 
     // 获取与背景色对比的半透明背景色
     getContrastBackgroundColor() {
       if (!this.selectedColor) return 'rgba(255, 255, 255, 0.2)';
-
-      const { r, g, b } = this.selectedColor.rgb;
-      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-      // 根据背景亮度选择半透明的黑色或白色
-      return luminance > 0.5 ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)';
+      return ColorUtils.getContrastBackgroundColor(this.selectedColor.rgb)
     },
 
     // 重置图片

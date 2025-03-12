@@ -152,9 +152,15 @@
           <view class="hsl-bars">
             <view class="progress-bar">
               <view class="progress-fill hue-gradient"></view>
+              <view class="hsl-indicator" :style="{ left: (selectedColor.hsl.h / 3.60) + '%' }"></view>
             </view>
             <view class="progress-bar">
               <view class="progress-fill saturation-gradient"></view>
+              <view class="hsl-indicator" :style="{ left: selectedColor.hsl.s + '%' }"></view>
+            </view>
+            <view class="progress-bar">
+              <view class="progress-fill lightness-gradient" :style="{ background: `linear-gradient(to right, #000000, #ffffff)`, width:  '100%' }"></view>
+              <view class="hsl-indicator" :style="{ left: selectedColor.hsl.l + '%' }"></view>
             </view>
           </view>
         </view>

@@ -330,7 +330,19 @@
   .hsl-bars {
     margin-top: 5px;
   }
-  
+  .hsl-indicator {
+    position: absolute;
+    width: 3px;
+    height: 15px;
+    background-color: #fff;
+    border-radius: 1px;
+    transform: translateY(-80%);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightness-gradient {
+    background: linear-gradient(to right, #000000, var(--current-color), #ffffff);
+  }
   .save-button {
     background-color: #2196F3;
     color: white;

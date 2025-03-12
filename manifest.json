@@ -7,6 +7,9 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
+        "compatible" : {
+            "ignoreVersion" : true // 忽略版本检测提示框
+        },
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,

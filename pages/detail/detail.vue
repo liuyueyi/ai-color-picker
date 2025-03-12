@@ -1,6 +1,7 @@
 <template>
   <view class="container">
     <!-- 顶部导航栏 -->
+    <!-- #ifndef APP-PLUS -->
     <view class="navbar" :style="{ backgroundColor: color.hex, color: getContrastColor() }">
       <view class="navbar-left" @click="goBack">
         <uni-icons type="left" size="20" :color="getContrastColor()" />
@@ -11,6 +12,7 @@
         <uni-icons type="home" size="20" :color="getContrastColor()" style="margin-left: 15px;" @click="goHome" />
       </view>
     </view>
+    <!-- #endif -->
 
     <!-- 颜色展示区域 -->
     <view class="color-display" :class="{ 'fullscreen': isFullscreen }"
@@ -171,6 +173,36 @@ export default {
         });
       }
     }
+  },
+  onReady() {
+    // uni.setNavigationBarTitle({
+    //   title: this.color.name
+    // });
+
+    // uni.setNavigationBarColor({
+    //   backgroundColor: this.color.hex,
+    //   frontColor: this.getContrastColor(),
+    //   animation: {
+    //     duration: 200,
+    //     timingFunc: 'easeIn'
+    //   }
+    // });
+
+    // #ifdef APP-PLUS
+    // 隐藏系统状态栏
+    plus.navigator.setStatusBarBackground(this.color.hex);
+    plus.navigator.setNavigationBarColor(this.color.hex);
+    uni.setNavigationBarColor({
+      backgroundColor: this.color.hex,
+      frontColor: this.getContrastColor(),
+      animation: {
+        duration: 200,
+        timingFunc: 'easeIn'
+      }
+    });
+    // 设置底部手势区域颜色
+    plus.navigator.setFullscreenNavigationBarColor(this.color.hex);
+    // #endif
   },
   methods: {
     // 返回上一页

@@ -20,7 +20,6 @@
       <uni-icons type="image" size="64" color="#ccc" />
       <text class="empty-text">点击选择图片</text>
     </view>
-
     <!-- 颜色显示区域 -->
     <view class="color-display" v-if="selectedColor" :style="{ backgroundColor: selectedColor.hex }">
       <text class="color-name" :style="{ color: getContrastColor() }">{{ selectedColor.name }}</text>
@@ -240,8 +239,8 @@ export default {
     }
   },
   onLoad() {
-    // 设置默认图片
-    this.imagePath = '/static/bg/girl.jpg';
+    // // 设置默认图片
+    // this.imagePath = '/static/bg/girl.jpg';
 
     // 从本地存储加载历史记录
     try {

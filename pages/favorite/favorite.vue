@@ -12,12 +12,7 @@
     <!-- 颜色卡片网格 -->
     <scroll-view class="color-grid" scroll-y>
       <view class="grid-container" v-if="favoriteColors.length > 0">
-        <view
-          class="color-card"
-          v-for="(color, index) in favoriteColors"
-          :key="index"
-          @click="goToColorDetail(color)"
-        >
+        <view class="color-card" v-for="(color, index) in favoriteColors" :key="index" @click="goToColorDetail(color)">
           <view class="color-preview" :style="{ backgroundColor: color.hex }">
             <text class="color-name" :style="{ color: getContrastColor(color.hex) }">
               {{ color.name }}
@@ -34,7 +29,8 @@
             </view>
             <view class="info-row">
               <text class="label">CMYK</text>
-              <text class="value">({{ color.cmyk.c }}%, {{ color.cmyk.m }}%, {{ color.cmyk.y }}%, {{ color.cmyk.k }}%)</text>
+              <text class="value">({{ color.cmyk.c }}%, {{ color.cmyk.m }}%, {{ color.cmyk.y }}%, {{ color.cmyk.k
+                }}%)</text>
             </view>
           </view>
         </view>
@@ -58,6 +54,11 @@ export default {
   },
 
   onLoad() {
+    this.loadFavoriteColors()
+  },
+  // 添加 onShow 生命周期函数
+  onShow() {
+    // 每次页面显示时重新加载收藏列表
     this.loadFavoriteColors()
   },
 
@@ -105,7 +106,14 @@ export default {
   display: flex;
   flex-direction: column;
   height: calc(100vh - var(--window-bottom));
+  /* #ifdef APP-PLUS */
+  height: calc(100vh - 50px - var(--window-bottom));
+  /* #endif */
   background-color: #f5f5f5;
+  /* 防止整体滚动和回弹 */
+  -webkit-overflow-scrolling: none;
+    overscroll-behavior: none;
+    touch-action: none;
 }
 
 .navbar {
@@ -125,7 +133,7 @@ export default {
 
 .color-grid {
   flex: 1;
-  padding: 15px;
+  padding: 15px 15px 50px 15px;
 }
 
 .grid-container {

@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100vh;
     background-color: #f5f5f5;
+    padding-top: 0;
 }
 
 .navbar {
@@ -13,6 +14,11 @@
     color: white;
     padding: 10px 15px;
     height: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
 }
 
 .navbar-left,
@@ -35,6 +41,12 @@
     height: calc(100vh - var(--status-bar-height) - 50px);
     box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.2);
     animation: glowPulse 2s ease-in-out infinite;
+    position: fixed;
+    top: var(--status-bar-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
 }
 @keyframes glowPulse {
     0% {

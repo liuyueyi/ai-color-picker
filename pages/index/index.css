@@ -4,7 +4,16 @@
     flex-direction: column;
     height: 88vh;
     overflow: hidden;
-    /* 防止整体滚动 */
+    margin-top: var(--status-bar-height);
+    /* 防止整体滚动和回弹 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-overflow-scrolling: none;
+    overscroll-behavior: none;
+    touch-action: none;
   }
   
   /* 工具栏样式 */
@@ -118,9 +127,14 @@
   /* 颜色显示区域样式 */
   .color-display {
     position: fixed;
-    bottom: calc(24rpx + constant(safe-area-inset-bottom));
-    bottom: calc(24rpx + env(safe-area-inset-bottom));
+    bottom: calc(constant(safe-area-inset-bottom));
+    bottom: calc(env(safe-area-inset-bottom));
+    /* #ifdef APP-PLUS */
+    height: 4.5rem;
+    /* #endif */
+    /* #ifndef APP-PLUS */
     height: 6rem;
+    /* #endif */
     left: 0;
     right: 0;
     padding: 15px;
@@ -146,8 +160,14 @@
     position: fixed;
     left: 0;
     right: 0;
+    /* #ifdef APP-ANDROID */
+    bottom: calc(constant(safe-area-inset-bottom) + 4.5rem);
+    bottom: calc(env(safe-area-inset-bottom) + 4.5rem);
+    /* #endif */
+    /* #ifndef APP-ANDROID */
     bottom: calc(constant(safe-area-inset-bottom) + 6rem);
     bottom: calc(env(safe-area-inset-bottom) + 6rem);
+    /* #endif */
     max-width: 70vw;
     z-index: 99;
     border-radius: 16px 16px 0 0;

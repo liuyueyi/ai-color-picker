@@ -24,5 +24,12 @@ export default {
 
 page {
   background-color: #f8f8f8;
+  padding-top: var(--status-bar-height);
+}
+
+/* 状态栏占位符 */
+.status-bar {
+  height: var(--status-bar-height);
+  width: 100%;
 }
 </style>

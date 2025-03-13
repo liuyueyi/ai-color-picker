@@ -123,8 +123,37 @@
       </view>
     </view>
 
-    <view class="favorite-float-btn" @click="toggleFavorite" :style="{ backgroundColor: color.hex }">
-      <uni-icons :type="isFavorite ? 'star-filled' : 'star'" size="24" :color="getContrastColor()" />
+    <view class="float-btns">
+      <view class="favorite-float-btn" @click="toggleFavorite" :style="{ backgroundColor: color.hex }">
+        <uni-icons :type="isFavorite ? 'star-filled' : 'star'" size="24" :color="getContrastColor()" />
+      </view>
+      <view class="tag-float-btn" @click="showGroupSelector = true" :style="{ backgroundColor: color.hex }">
+        <uni-icons type="folder-add" size="24" :color="getContrastColor()" />
+      </view>
+    </view>
+
+    <!-- 分组选择弹窗 -->
+    <view class="group-popup-mask" v-if="showGroupSelector" @click="showGroupSelector = false">
+      <view class="group-popup" @click.stop>
+        <view class="popup-header">
+          <text class="popup-title">选择分组</text>
+          <view class="popup-close" @click="showGroupSelector = false">
+            <uni-icons type="close" size="20" color="#666" />
+          </view>
+        </view>
+        <scroll-view class="group-list" scroll-y>
+          <view class="group-item" v-for="(group, index) in colorGroups" :key="index" @click="addToGroup(group.name)"
+            :class="{ 'active': group.name === color.category }"
+            :style="{ 'background-color': group.name === color.category ? color.hex + '20' : 'transparent' }">
+            <text class="group-name">{{ group.name }}</text>
+            <text class="group-count">({{ group.colors ? group.colors.length : 0 }})</text>
+          </view>
+        </scroll-view>
+        <view class="add-group">
+          <input type="text" v-model="newGroupName" placeholder="新建分组" class="group-input" />
+          <button class="add-btn" @click="createNewGroup">添加</button>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -132,6 +161,7 @@
 <script>
 import ColorUtils from '../../utils/colorUtils.js';
 import AdsUtils from '../../utils/AdsUtils.js';
+import { GroupUtils } from '../../utils/GroupUtils.js';
 
 export default {
   data() {
@@ -152,7 +182,10 @@ export default {
       percentValue: 100,
       similarColors: [],
       isFavorite: false,
-      favoriteColors: []
+      favoriteColors: [],
+      colorGroups: [],
+      newGroupName: '',
+      showGroupSelector: false
     }
   },
   onLoad(options) {
@@ -160,12 +193,19 @@ export default {
     if (options.color) {
       try {
         this.color = JSON.parse(decodeURIComponent(options.color));
+        if (!this.color.rgb) {
+          this.color.rgb = ColorUtils.hexToRgb(this.color.hex);
+        }
+
         // 自动计算补齐相关信息
         this.updateColorFromRgb();
+        console.log('获取到的颜色:', this.color);
         // 生成相似颜色
         this.generateSimilarColors();
         // 加载收藏状态
         this.loadFavoriteColors();
+        // 加载颜色分组
+        this.loadColorGroups();
       } catch (e) {
         console.error('解析颜色数据失败', e);
         uni.showToast({
@@ -385,6 +425,95 @@ export default {
     getGlowColor() {
       const { r, g, b } = this.color.rgb;
       return ColorUtils.getGlowColor(r, g, b);
+    },
+
+    // 加载颜色分组
+    loadColorGroups() {
+      this.colorGroups = GroupUtils.getGroups();
+    },
+
+    // 创建新分组
+    createNewGroup() {
+      if (!this.newGroupName.trim()) {
+        uni.showToast({
+          title: '分组名称不能为空',
+          icon: 'none'
+        });
+        return;
+      }
+
+      const result = GroupUtils.createGroup(this.newGroupName);
+      if (result.success) {
+        this.colorGroups = GroupUtils.getGroups();
+        this.newGroupName = '';
+        uni.showToast({
+          title: result.message,
+          icon: 'success'
+        });
+      } else {
+        uni.showToast({
+          title: result.message,
+          icon: 'none'
+        });
+      }
+    },
+
+    // 添加颜色到分组
+    addToGroup(groupName) {
+      const group = this.colorGroups.find(g => g.name === groupName);
+      if (!group) return;
+
+      if (this.color.category === groupName) {
+        // 如果颜色已在该分组中，则移除
+        const result = GroupUtils.removeColorFromGroup(group.id, this.color.hex);
+        if (result.success) {
+          this.colorGroups = GroupUtils.getGroups();
+          this.showGroupSelector = false;
+          // 重置分组为默认值
+          this.color.category = 'Common';
+          uni.showToast({
+            title: '已从分组移除',
+            icon: 'success'
+          });
+        } else {
+          uni.showToast({
+            title: result.message,
+            icon: 'none'
+          });
+        }
+        return;
+      }
+
+      const result = GroupUtils.addColorToGroup(group.id, this.color);
+      if (result.success) {
+        this.colorGroups = GroupUtils.getGroups();
+        this.showGroupSelector = false;
+
+        // 更新当前颜色的分组
+        this.color.category = groupName;
+        uni.showToast({
+          title: result.message,
+          icon: 'success'
+        });
+      } else {
+        uni.showToast({
+          title: result.message,
+          icon: 'none'
+        });
+      }
+    },
+
+    // 保存颜色分组
+    saveColorGroups() {
+      try {
+        uni.setStorageSync('colorGroups', JSON.stringify(this.colorGroups));
+      } catch (e) {
+        console.error('保存颜色分组失败', e);
+        uni.showToast({
+          title: '操作失败',
+          icon: 'none'
+        });
+      }
     },
   }
 }

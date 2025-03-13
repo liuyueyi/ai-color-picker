@@ -195,20 +195,146 @@
     color: #666;
 }
 
-.favorite-float-btn {
+.float-btns {
     position: fixed;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    width: 56px;
-    height: 56px;
-    border-radius: 28px;
-    background-color: #2196F3;
+    display: flex;
+    gap: 20px;
+    /* 按钮之间的间距 */
+    z-index: 100;
+}
+
+.favorite-float-btn,
+.tag-float-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    -webkit-tap-highlight-color: transparent;
+    /* 禁用移动端点击高亮 */
+    transition: transform 0.15s ease-in-out !important;
+    /* 添加过渡效果 */
+    user-select: none;
+    /* 禁止文本选择 */
+}
+
+/* 禁用点击状态的样式变化 */
+.favorite-float-btn:active,
+.tag-float-btn:active {
+    transform: scale(0.9) !important;
+    /* 点击时缩小到90% */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.group-popup-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: flex;
+    align-items: flex-end;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.group-popup {
+    background-color: white;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    max-height: 60vh;
+    width: 100%;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.popup-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.group-list {
+    max-height: 40vh;
+}
+
+.group-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.group-item.active {
+    background-color: #f0f0f0;
+    border-left: 3px solid #007AFF;
+}
+
+.group-name {
+    flex: 1;
+    font-size: 16px;
+}
+
+.group-count {
+    color: #999;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.add-group {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.group-input {
+    flex: 1;
+    height: 40px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 0 10px;
+}
+
+.add-btn {
+    width: 80px;
+    height: 40px;
+    background-color: #007AFF;
+    color: white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
 .favorite-float-btn:active {

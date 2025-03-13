@@ -19,7 +19,7 @@
       <input 
         type="text" 
         v-model="searchKeyword"
-        placeholder="搜索颜色名称"
+        placeholder="search by color name"
         placeholder-class="search-placeholder"
       />
     </view>

@@ -27,6 +27,13 @@
 				"navigationBarTitleText" : "收藏的颜色",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path" : "pages/my/my",
+			"style" : {
+				"navigationBarTitleText" : "我的",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {
@@ -51,8 +58,8 @@
 			"iconPath": "static/icons/history-normal.png",
 			"selectedIconPath": "static/icons/history-active.png"
 		}, {
-			"pagePath": "pages/favorite/favorite",
-			"text": "Favorite",
+			"pagePath": "pages/my/my",
+			"text": "My",
 			"iconPath": "static/icons/tab-my.png",
 			"selectedIconPath": "static/icons/tab-my-current.png"
 		}]

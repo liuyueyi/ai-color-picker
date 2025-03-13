@@ -2,10 +2,12 @@
   <view class="container">
     <!-- 顶部导航栏 -->
     <view class="navbar">
-      <view class="navbar-left"></view>
+      <view class="navbar-left" @click="goBack">
+        <uni-icons type="left" size="20" />
+      </view>
       <view class="navbar-title">Favorite Color</view>
       <view class="navbar-right">
-        <!-- <uni-icons type="more-filled" size="20" color="#fff" /> -->
+        <uni-icons type="home" size="20" style="margin-left: 15px;" @click="goHome" />
       </view>
     </view>
 
@@ -63,6 +65,27 @@ export default {
   },
 
   methods: {
+    // 返回上一页
+    goBack() {
+      uni.navigateBack();
+    },
+    goHome() {
+      // 返回主页
+      // 返回主页
+      uni.reLaunch({
+        url: '/pages/index/index',
+        success: () => {
+          console.log('成功返回主页');
+        },
+        fail: (err) => {
+          console.error('返回主页失败', err);
+          uni.showToast({
+            title: '返回主页失败',
+            icon: 'none'
+          });
+        }
+      });
+    },
     // 加载收藏的颜色
     loadFavoriteColors() {
       try {

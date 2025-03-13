@@ -287,14 +287,62 @@ export default {
     },
     // 选择图片
     chooseImage() {
+      // #ifdef APP-PLUS
+      // 检查相机权限
+      const checkPermission = () => {
+        const permission = plus.android.importClass("android.Manifest");
+        const main = plus.android.runtimeMainActivity();
+        const pkName = main.getPackageName();
+        const checkMethod = plus.android.importClass("android.content.pm.PackageManager");
+        const hasPermission = main.checkSelfPermission(permission.permission.CAMERA);
+        return hasPermission === checkMethod.PERMISSION_GRANTED;
+      };
+
+      if (!checkPermission()) {
+        plus.android.requestPermissions(
+          ["android.permission.CAMERA"],
+          function (resultObj) {
+            if (resultObj.granted.length > 0) {
+              // 用户同意了权限
+              this.showImagePicker();
+            } else {
+              // 用户拒绝了权限
+              uni.showToast({
+                title: '需要相机权限才能拍照',
+                icon: 'none'
+              });
+            }
+          },
+          function (error) {
+            console.error('权限请求失败', error);
+          }
+        );
+      } else {
+        this.showImagePicker();
+      }
+      // #endif
+
+      // #ifndef APP-PLUS
+      this.showImagePicker();
+      // #endif
+    },
+    // 显示图片选择器
+    showImagePicker() {
       uni.chooseImage({
         count: 1,
+        sourceType: ['camera', 'album'],
         success: (res) => {
           this.imagePath = res.tempFilePaths[0];
+        },
+        fail: (err) => {
+          console.error('选择图片失败:', err);
+          uni.showToast({
+            title: '选择图片失败',
+            icon: 'none'
+          });
         }
       });
     },
-
     // 提取颜色
     pickColor(e) {
       // 获取触摸位置

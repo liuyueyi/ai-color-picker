@@ -207,7 +207,7 @@
 <script>
 import ColorUtils from '../../utils/colorUtils.js';
 import AdsUtils from '../../utils/AdsUtils.js';
-import { GroupUtils } from '../../utils/GroupUtils.js';
+import GroupUtils  from '../../utils/GroupUtils.js';
 
 export default {
   data() {

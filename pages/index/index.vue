@@ -212,6 +212,10 @@
       <view class="dialog-content">
         <view class="color-preview" :style="{ backgroundColor: selectedColor ? selectedColor.hex : '#000' }"></view>
         <input class="name-input" v-model="colorNameInput" placeholder="请输入颜色名称" />
+        <picker @change="onGroupChange" :value="selectedGroup" :range="colorGroups" range-key="name"
+          class="group-picker">
+          <view class="picker-value">{{ selectedGroup ? selectedGroup : '请选择分组' }}</view>
+        </picker>
       </view>
       <view class="dialog-footer">
         <button class="dialog-btn cancel-btn" @click="cancelSaveColor">取消</button>
@@ -224,6 +228,7 @@
 <script>
 import ColorUtils from '../../utils/colorUtils.js';
 import AdsUtils from '../../utils/AdsUtils.js';
+import GroupUtils from '../../utils/GroupUtils.js';
 
 export default {
   data() {
@@ -239,6 +244,8 @@ export default {
       showNameDialog: false,
       colorNameInput: '',
       detailsMaxHeight: 600, // 默认最大高度
+      colorGroups: [], // 颜色分组
+      selectedGroup: '', // 选中的分组
     }
   },
   onLoad() {
@@ -564,6 +571,18 @@ export default {
     },
 
     // 保存颜色到历史记录
+    // 加载颜色分组
+    loadColorGroups() {
+      this.colorGroups = GroupUtils.getGroups();
+    },
+
+    // 分组选择改变
+    onGroupChange(e) {
+      const index = e.detail.value;
+      this.selectedGroup = this.colorGroups[index].name;
+    },
+
+    // 保存颜色
     saveColor() {
       // 尝试调用android的方法
       AdsUtils.showAds();
@@ -571,6 +590,8 @@ export default {
       if (!this.selectedColor) return;
       // 显示命名弹窗
       this.colorNameInput = this.selectedColor.name || '';
+      // 加载颜色分组
+      this.loadColorGroups();
       // 默认使用当前颜色名称
       this.showNameDialog = true;
     },
@@ -579,11 +600,19 @@ export default {
     confirmSaveColor() {
       if (!this.selectedColor) return;
 
+      if (!this.colorNameInput.trim()) {
+        uni.showToast({
+          title: '请输入颜色名称',
+          icon: 'none'
+        });
+        return;
+      }
+
       // 创建历史记录项
       const historyItem = {
         ...this.selectedColor,
         name: this.colorNameInput || this.selectedColor.name, // 使用用户输入的名称
-        category: 'Common colors',
+        category: this.selectedGroup ? this.selectedGroup : 'Common',
         timestamp: new Date().toISOString()
       };
 
@@ -598,6 +627,22 @@ export default {
       // 保存到本地存储
       try {
         uni.setStorageSync('colorHistory', JSON.stringify(this.colorHistory));
+
+        // 保存到分组
+        if (this.selectedGroup) {
+          const group = this.colorGroups.find(g => g.name === this.selectedGroup);
+          if (group) {
+            const result = GroupUtils.addColorToGroup(group.id, historyItem);
+            if (!result.success) {
+              uni.showToast({
+                title: result.message,
+                icon: 'none'
+              });
+              return;
+            }
+          }
+        }
+
         uni.showToast({
           title: '颜色已保存',
           icon: 'success'
@@ -612,6 +657,7 @@ export default {
 
       // 关闭弹窗
       this.showNameDialog = false;
+      this.selectedGroup = '';
     },
 
     // 取消保存

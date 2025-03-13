@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { GroupUtils } from '../../utils/GroupUtils.js'
+import  GroupUtils  from '../../utils/GroupUtils.js'
 
 export default {
     data() {

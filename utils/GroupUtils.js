@@ -2,7 +2,7 @@
  * 颜色分组工具类
  * 提供颜色分组的统一管理功能，包括查询、新建、删除、重命名等
  */
-export class GroupUtils {
+export default class GroupUtils {
     /**
      * 获取所有颜色分组
      * @returns {Array} 分组列表

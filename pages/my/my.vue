@@ -33,11 +33,12 @@
                 </view>
                 <view class="my-categories">
                     <view class="category-item" @click="navigateToFavorites">
-                        <text>收藏</text>
+                        <uni-icons type="heart-filled" color="#666" />
+                        <text style="padding-left: 0.2rem;font-size: 1.1rem;">收藏</text>
                     </view>
-                    <view class="category-item" @click="navigateToGroups">
+                    <!-- <view class="category-item" @click="navigateToGroups">
                         <text>分组</text>
-                    </view>
+                    </view> -->
                     <view class="category-item add-group" @click="showAddGroupDialog">
                         <uni-icons type="plus" size="20" color="#666" />
                     </view>

@@ -207,7 +207,7 @@
 <script>
 import ColorUtils from '../../utils/colorUtils.js';
 import AdsUtils from '../../utils/AdsUtils.js';
-import GroupUtils  from '../../utils/GroupUtils.js';
+import GroupUtils from '../../utils/GroupUtils.js';
 
 export default {
   data() {
@@ -238,7 +238,8 @@ export default {
       selectedGroup: '',
       colorName: '',
       showColorPicker: false,
-      colorWheelContext: null
+      isColorWheelInitialized: false,
+      colorWheelContext: null,
     }
   },
   onLoad(options) {
@@ -276,12 +277,26 @@ export default {
   onReady() {
     this.hideNav();
   },
+  watch: {
+    showColorPicker(newVal) {
+      if (newVal && this.colorWheelContext) {
+        this.$nextTick(() => {
+          const { width, height } = this.colorWheelContext.canvas;
+          this.drawColorWheel(this.colorWheelContext, width, height);
+          this.colorWheelContext.draw();
+        });
+      }
+    }
+  },
   methods: {
     doShowColorPicker() {
       this.showColorPicker = true;
-      this.$nextTick(() => {
-        this.initColorWheel();
-      });
+      if (!this.isColorWheelInitialized) {
+        this.$nextTick(() => {
+          this.initColorWheel();
+          this.isColorWheelInitialized = true;
+        });
+      }
     },
     // 初始化调色盘
     initColorWheel() {
@@ -369,34 +384,40 @@ export default {
     onColorWheelTouch(e) {
       const touch = e.touches[0];
       const query = uni.createSelectorQuery().in(this);
-      
+
       query.select('.color-wheel').boundingClientRect(data => {
-        if (!data) return;
-        
+        if (!data) {
+          uni.showToast({
+            title: '颜色选择失败~',
+            icon: 'none'
+          });
+          return;
+        }
+
         const rect = data;
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
-        
+
         // 计算相对于圆心的位置
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         const dx = x - centerX;
         const dy = y - centerY;
-        
+
         // 计算距离和角度
         const distance = Math.sqrt(dx * dx + dy * dy);
         const radius = Math.min(rect.width, rect.height) / 2 - 10;
-        
+
         // 确保点击在圆形范围内
         if (distance <= radius) {
           // 计算HSL值
           const hue = (Math.atan2(dy, dx) * 180 / Math.PI + 180) % 360;
           const saturation = Math.min(100, (distance / radius) * 100);
           const lightness = 50; // 固定亮度值
-          
+
           // 转换为RGB
           const [r, g, b] = ColorUtils.hslToRgb(hue, saturation, lightness);
-          
+
           // 更新颜色
           this.color.rgb = { r, g, b };
           this.color.hex = ColorUtils.rgbToHex(r, g, b);

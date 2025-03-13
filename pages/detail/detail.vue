@@ -130,6 +130,10 @@
       <view class="tag-float-btn" @click="showGroupSelector = true" :style="{ backgroundColor: color.hex }">
         <uni-icons type="folder-add" size="24" :color="getContrastColor()" />
       </view>
+      <view v-if="showSaveButton" class="save-float-btn" @click="showSavePopup = true"
+        :style="{ backgroundColor: color.hex }">
+        <uni-icons type="plus" size="24" :color="getContrastColor()" />
+      </view>
     </view>
 
     <!-- 分组选择弹窗 -->
@@ -152,6 +156,28 @@
         <view class="add-group">
           <input type="text" v-model="newGroupName" placeholder="新建分组" class="group-input" />
           <button class="add-btn" @click="createNewGroup">添加</button>
+        </view>
+      </view>
+    </view>
+    <!-- 保存颜色弹窗 -->
+    <view class="save-popup-mask" v-if="showSavePopup" @click="showSavePopup = false">
+      <view class="save-popup" @click.stop>
+        <view class="popup-header">
+          <text class="popup-title">保存颜色</text>
+          <view class="popup-close" @click="showSavePopup = false">
+            <uni-icons type="close" size="20" color="#666" />
+          </view>
+        </view>
+        <view class="popup-content">
+          <input type="text" v-model="colorName" placeholder="请输入颜色名称" class="color-input" />
+          <picker @change="onGroupChange" :value="selectedGroup" :range="colorGroups" range-key="name"
+            class="group-picker">
+            <view class="picker-value">{{ selectedGroup ? selectedGroup : '请选择分组' }}</view>
+          </picker>
+        </view>
+        <view class="popup-footer">
+          <button class="cancel-btn" @click="showSavePopup = false">取消</button>
+          <button class="save-btn" @click="saveColor">保存</button>
         </view>
       </view>
     </view>
@@ -185,7 +211,11 @@ export default {
       favoriteColors: [],
       colorGroups: [],
       newGroupName: '',
-      showGroupSelector: false
+      showGroupSelector: false,
+      showSaveButton: false,
+      showSavePopup: false,
+      selectedGroup: '',
+      colorName: ''
     }
   },
   onLoad(options) {
@@ -282,18 +312,24 @@ export default {
 
     // 更新红色值
     updateRed(e) {
+      this.showSaveButton = true;
+
       this.color.rgb.r = e.detail.value;
       this.updateColorFromRgb();
     },
 
     // 更新绿色值
     updateGreen(e) {
+      this.showSaveButton = true;
+
       this.color.rgb.g = e.detail.value;
       this.updateColorFromRgb();
     },
 
     // 更新蓝色值
     updateBlue(e) {
+      this.showSaveButton = true;
+
       this.color.rgb.b = e.detail.value;
       this.updateColorFromRgb();
     },
@@ -319,7 +355,6 @@ export default {
 
       // 计算色温
       this.color.temperature = ColorUtils.calculateColorTemperature(r, g, b);
-
       this.color.wavelength = ColorUtils.calculateDominantWavelength(r, g, b);
     },
     // 生成相似颜色
@@ -515,6 +550,70 @@ export default {
         });
       }
     },
+
+    // 分组选择改变
+    onGroupChange(e) {
+      const index = e.detail.value;
+      this.selectedGroup = this.colorGroups[index].name;
+    },
+
+    // 保存颜色
+    saveColor() {
+      if (!this.colorName.trim()) {
+        uni.showToast({
+          title: '请输入颜色名称',
+          icon: 'none'
+        });
+        return;
+      }
+
+      if (!this.selectedGroup) {
+        uni.showToast({
+          title: '请选择分组',
+          icon: 'none'
+        });
+        return;
+      }
+
+      const newColor = {
+        ...this.color,
+        name: this.colorName,
+        category: this.selectedGroup
+      };
+
+      const group = this.colorGroups.find(g => g.name === this.selectedGroup);
+      if (!group) return;
+
+      const result = GroupUtils.addColorToGroup(group.id, newColor);
+      if (result.success) {
+        this.colorGroups = GroupUtils.getGroups();
+        this.showSavePopup = false;
+        this.showSaveButton = false;
+        this.colorName = '';
+        this.selectedGroup = '';
+
+        // 更新当前颜色信息
+        this.color = newColor;
+        // 取消收藏
+        if (this.isFavorite) {
+          this.isFavorite = false;
+          const index = this.favoriteColors.findIndex(item => item.hex === this.color.hex);
+          if (index !== -1) {
+            this.favoriteColors.splice(index, 1);
+          }
+        }
+
+        uni.showToast({
+          title: '保存成功',
+          icon: 'success'
+        });
+      } else {
+        uni.showToast({
+          title: result.message,
+          icon: 'none'
+        });
+      }
+    }
   }
 }
 </script>

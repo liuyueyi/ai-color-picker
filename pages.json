@@ -34,6 +34,20 @@
 				"navigationBarTitleText" : "我的",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path" : "pages/favorite/groups",
+			"style" : {
+				"navigationBarTitleText" : "分组",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/colors/colors",
+			"style" : {
+				"navigationBarTitleText" : "系统色",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

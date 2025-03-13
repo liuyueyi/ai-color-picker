@@ -160,6 +160,8 @@ export default {
     if (options.color) {
       try {
         this.color = JSON.parse(decodeURIComponent(options.color));
+        // 自动计算补齐相关信息
+        this.updateColorFromRgb();
         // 生成相似颜色
         this.generateSimilarColors();
         // 加载收藏状态
@@ -274,6 +276,11 @@ export default {
 
       // 更新亮度
       this.color.luminance = Math.floor((r * 0.299 + g * 0.587 + b * 0.114) / 255 * 100);
+
+      // 计算色温
+      this.color.temperature = ColorUtils.calculateColorTemperature(r, g, b);
+
+      this.color.wavelength = ColorUtils.calculateDominantWavelength(r, g, b);
     },
     // 生成相似颜色
     generateSimilarColors() {

@@ -93,6 +93,7 @@ export default {
         if (favorites) {
           this.favoriteColors = JSON.parse(favorites)
         }
+        console.log('收藏的颜色：', this.favoriteColors);
       } catch (e) {
         console.error('加载收藏颜色失败', e)
         uni.showToast({

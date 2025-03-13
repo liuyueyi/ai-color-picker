@@ -5,7 +5,6 @@
       <view class="toolbar-icons">
         <view class="icon-item" @click="chooseImage"> <uni-icons type="camera" size="24" color="#333" /></view>
         <view class="icon-item" @click="resetImage"><uni-icons type="refresh" size="24" color="#333" /></view>
-        <view class="icon-item"><uni-icons type="filter" size="24" color="#fff" /></view>
       </view>
     </view>
 
@@ -224,6 +223,7 @@
 
 <script>
 import ColorUtils from '../../utils/colorUtils.js';
+import AdsUtils from '../../utils/AdsUtils.js';
 
 export default {
   data() {
@@ -242,8 +242,18 @@ export default {
     }
   },
   onLoad() {
-    // // 设置默认图片
-    // this.imagePath = '/static/bg/girl.jpg';
+    try {
+      const loadTag = uni.getStorageSync("firstLoadTime");
+      if (!loadTag) {
+        // 设置默认图片
+        this.imagePath = '/static/bg/girl.jpg';
+        uni.setStorageSync('firstLoadTime', new Date().getTime());
+      }
+    } catch (e) {
+      // 默认的示例图片
+      this.imagePath = '/static/bg/girl.jpg';
+    }
+
 
     // 从本地存储加载历史记录
     try {
@@ -507,6 +517,9 @@ export default {
 
     // 保存颜色到历史记录
     saveColor() {
+      // 尝试调用android的方法
+      AdsUtils.showAds();
+
       if (!this.selectedColor) return;
       // 显示命名弹窗
       this.colorNameInput = this.selectedColor.name || '';
@@ -530,7 +543,7 @@ export default {
       this.colorHistory.unshift(historyItem);
 
       // 限制历史记录数量
-      if (this.colorHistory.length > 50) {
+      if (this.colorHistory.length > 2000) {
         this.colorHistory.pop();
       }
 

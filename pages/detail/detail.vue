@@ -131,6 +131,7 @@
 
 <script>
 import ColorUtils from '../../utils/colorUtils.js';
+import AdsUtils from '../../utils/AdsUtils.js';
 
 export default {
   data() {
@@ -178,35 +179,7 @@ export default {
     this.showNav();
   },
   onReady() {
-    // uni.setNavigationBarTitle({
-    //   title: this.color.name
-    // });
-
-    // uni.setNavigationBarColor({
-    //   backgroundColor: this.color.hex,
-    //   frontColor: this.getContrastColor(),
-    //   animation: {
-    //     duration: 200,
-    //     timingFunc: 'easeIn'
-    //   }
-    // });
-
     this.hideNav()
-    // #ifdef APP-PLUS
-    // // 隐藏系统状态栏
-    // plus.navigator.setStatusBarBackground(this.color.hex);
-    // plus.navigator.setNavigationBarColor(this.color.hex);
-    // uni.setNavigationBarColor({
-    //   backgroundColor: this.color.hex,
-    //   frontColor: this.getContrastColor(),
-    //   animation: {
-    //     duration: 200,
-    //     timingFunc: 'easeIn'
-    //   }
-    // });
-    // // 设置底部手势区域颜色
-    // plus.navigator.setFullscreenNavigationBarColor(this.color.hex);
-    // #endif
   },
   methods: {
     hideNav() {
@@ -253,6 +226,7 @@ export default {
     toggleFullscreen() {
       this.isFullscreen = !this.isFullscreen;
       if (this.isFullscreen) {
+        AdsUtils.showAds();
         this.hideNav()
       } else {
         this.showNav()

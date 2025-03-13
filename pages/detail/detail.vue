@@ -124,6 +124,9 @@
     </view>
 
     <view class="float-btns">
+      <view class="palette-float-btn" @click="doShowColorPicker" :style="{ backgroundColor: color.hex }">
+        <uni-icons type="color" size="24" :color="getContrastColor()" />
+      </view>
       <view class="favorite-float-btn" @click="toggleFavorite" :style="{ backgroundColor: color.hex }">
         <uni-icons :type="isFavorite ? 'star-filled' : 'star'" size="24" :color="getContrastColor()" />
       </view>
@@ -133,6 +136,23 @@
       <view v-if="showSaveButton" class="save-float-btn" @click="showSavePopup = true"
         :style="{ backgroundColor: color.hex }">
         <uni-icons type="plus" size="24" :color="getContrastColor()" />
+      </view>
+    </view>
+
+    <!-- 调色盘弹窗 -->
+    <view class="color-picker-popup-mask" v-if="showColorPicker" @click="showColorPicker = false">
+      <view class="color-picker-popup" @click.stop>
+        <view class="popup-header">
+          <text class="popup-title">调色盘</text>
+          <view class="popup-close" @click="showColorPicker = false">
+            <uni-icons type="close" size="20" color="#666" />
+          </view>
+        </view>
+        <view class="color-picker-content">
+          <canvas class="color-wheel" canvas-id="colorWheel" @touchstart="onColorWheelTouch"
+            @touchmove="onColorWheelTouch"></canvas>
+          <view class="selected-color-preview" :style="{ backgroundColor: color.hex }"></view>
+        </view>
       </view>
     </view>
 
@@ -198,6 +218,7 @@ export default {
         rgb: { r: 0, g: 0, b: 0 },
         cmyk: { c: 0, m: 0, y: 0, k: 0 },
         hsl: { h: 0, s: 0, l: 0 },
+        hlv: { h: 0, l: 0, v: 0 },
         temperature: 0,
         wavelength: 0,
         luminance: 0,
@@ -215,7 +236,9 @@ export default {
       showSaveButton: false,
       showSavePopup: false,
       selectedGroup: '',
-      colorName: ''
+      colorName: '',
+      showColorPicker: false,
+      colorWheelContext: null
     }
   },
   onLoad(options) {
@@ -251,9 +274,146 @@ export default {
     this.showNav();
   },
   onReady() {
-    this.hideNav()
+    this.hideNav();
   },
   methods: {
+    doShowColorPicker() {
+      this.showColorPicker = true;
+      this.$nextTick(() => {
+        this.initColorWheel();
+      });
+    },
+    // 初始化调色盘
+    initColorWheel() {
+      try {
+        const query = uni.createSelectorQuery().in(this);
+        query.select('.color-wheel').fields({
+          node: true,
+          size: true
+        }).exec((res) => {
+          if (!res || !res[0]) {
+            console.error('获取canvas节点失败');
+            uni.showToast({
+              title: '初始化调色盘失败',
+              icon: 'none'
+            });
+            return;
+          }
+
+          const data = res[0];
+          const width = data.width || 200;
+          const height = data.height || 200;
+          const ctx = uni.createCanvasContext('colorWheel', this);
+
+          // 设置canvas尺寸
+          ctx.canvas = { width, height };
+          this.colorWheelContext = ctx;
+
+          // 清空画布并设置背景
+          ctx.fillStyle = '#f5f5f5';
+          ctx.fillRect(0, 0, width, height);
+
+          console.log('准备绘制调色盘...');
+
+          this.drawColorWheel(ctx, width, height);
+          ctx.draw();
+        });
+      } catch (error) {
+        console.error('初始化调色盘失败:', error);
+        uni.showToast({
+          title: '初始化调色盘失败',
+          icon: 'none'
+        });
+      }
+    },
+
+    // 绘制调色盘
+    drawColorWheel(ctx, width, height) {
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const radius = Math.min(width, height) / 2 - 10;
+
+      try {
+        // 绘制外圈边框
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius + 2, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#ddd';
+        ctx.stroke();
+
+        console.log('绘制调色盘...', height, width);
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const dx = x - centerX;
+            const dy = y - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance <= radius) {
+              const hue = (Math.atan2(dy, dx) * 180 / Math.PI + 180) % 360;
+              const saturation = Math.min(100, (distance / radius) * 100);
+              const [r, g, b] = ColorUtils.hslToRgb(hue, saturation, 50);
+              ctx.fillStyle = `rgb(${r},${g},${b})`;
+              ctx.fillRect(x, y, 1, 1);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('绘制调色盘失败:', error);
+        uni.showToast({
+          title: '初始化调色盘失败',
+          icon: 'none'
+        });
+      }
+    },
+
+    // 处理调色盘触摸事件
+    onColorWheelTouch(e) {
+      const touch = e.touches[0];
+      const query = uni.createSelectorQuery().in(this);
+      
+      query.select('.color-wheel').boundingClientRect(data => {
+        if (!data) return;
+        
+        const rect = data;
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        
+        // 计算相对于圆心的位置
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const dx = x - centerX;
+        const dy = y - centerY;
+        
+        // 计算距离和角度
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const radius = Math.min(rect.width, rect.height) / 2 - 10;
+        
+        // 确保点击在圆形范围内
+        if (distance <= radius) {
+          // 计算HSL值
+          const hue = (Math.atan2(dy, dx) * 180 / Math.PI + 180) % 360;
+          const saturation = Math.min(100, (distance / radius) * 100);
+          const lightness = 50; // 固定亮度值
+          
+          // 转换为RGB
+          const [r, g, b] = ColorUtils.hslToRgb(hue, saturation, lightness);
+          
+          // 更新颜色
+          this.color.rgb = { r, g, b };
+          this.color.hex = ColorUtils.rgbToHex(r, g, b);
+          this.updateColorFromRgb();
+          this.showSaveButton = true;
+        }
+      }).exec();
+    },
+
+    // 更新颜色数据
+    updateColorFromImageData(data) {
+      this.color.rgb.r = data[0];
+      this.color.rgb.g = data[1];
+      this.color.rgb.b = data[2];
+      this.updateColorFromRgb();
+      this.showSaveButton = true;
+    },
     hideNav() {
       // #ifdef APP-PLUS
       plus.navigator.setFullscreen(true); // 隐藏状态栏
@@ -620,4 +780,46 @@ export default {
 
 <style>
 @import './detail.css';
+
+
+.color-picker-popup-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-picker-popup {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 300px;
+  padding: 20px;
+}
+
+.color-picker-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.color-wheel {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 20px;
+}
+
+.selected-color-preview {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  border: 2px solid #eee;
+}
 </style>

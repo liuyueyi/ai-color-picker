@@ -13,11 +13,22 @@
       </view>
     </view>
     
+    <!-- 搜索框 -->
+    <view class="search-box">
+      <uni-icons type="search" size="16" color="#666"/>
+      <input 
+        type="text" 
+        v-model="searchKeyword"
+        placeholder="搜索颜色名称"
+        placeholder-class="search-placeholder"
+      />
+    </view>
+
     <!-- 历史记录列表 -->
     <view class="history-list" scroll-y>
       <view 
         class="history-item-wrapper" 
-        v-for="(item, index) in colorHistory" 
+        v-for="(item, index) in filteredHistory" 
         :key="index"
         @touchstart="touchStart($event, index)"
         @touchmove="touchMove($event, index)"
@@ -42,7 +53,7 @@
       
       <view class="empty-history" v-if="colorHistory.length === 0">
         <uni-icons type="info" size="64" color="#ccc" />
-        <text>暂无历史记录</text>
+        <text>{{ searchKeyword ? 'No records found(未找到相關記錄)' : 'No History Records(暫無歷史記錄)' }}</text>
       </view>
     </view>
   </view>
@@ -57,7 +68,8 @@ export default {
       touchStartX: 0,
       touchStartY: 0,
       currentIndex: -1,
-      deleteButtonWidth: 80
+      deleteButtonWidth: 80,
+      searchKeyword: '' // 添加搜索关键字
     }
   },
   onLoad() {
@@ -68,6 +80,15 @@ export default {
     // 每次显示页面时重新加载历史记录
     this.loadHistory();
     this.loadFavoriteColors();
+  },
+  computed: {
+    filteredHistory() {
+      if (!this.searchKeyword) return this.colorHistory;
+      const keyword = this.searchKeyword.toLowerCase();
+      return this.colorHistory.filter(item => 
+        item.name.toLowerCase().includes(keyword)
+      );
+    }
   },
   methods: {
     // 加载历史记录

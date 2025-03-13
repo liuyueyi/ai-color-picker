@@ -131,3 +131,24 @@
     display: flex;
     align-items: center;
 }
+
+/* 添加搜索框样式 */
+.search-box {
+    display: flex;
+    align-items: center;
+    margin: 10px 15px 0px 15px;
+    padding: .8rem;
+    background-color: #eee;
+    border-radius: 20px;
+  }
+  
+  .search-box input {
+    flex: 1;
+    margin-left: 8px;
+    font-size: 14px;
+  }
+  
+  .search-placeholder {
+    color: #999;
+    font-size: 14px;
+  }

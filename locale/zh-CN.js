@@ -1,4 +1,9 @@
 export default {
+    tabBar: {
+        my: '我的',
+        record: '记录',
+        picker: '拾色'
+    },
     common: {
         colorPicker: '调色板',
         colors: '颜色',

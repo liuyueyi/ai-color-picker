@@ -12,29 +12,21 @@
         <!-- <uni-icons type="more-filled" size="20" color="#fff" style="margin-left: 15px;" /> -->
       </view>
     </view>
-    
+
     <!-- 搜索框 -->
     <view class="search-box">
-      <uni-icons type="search" size="16" color="#666"/>
-      <input 
-        type="text" 
-        v-model="searchKeyword"
-        :placeholder="LocaleUtils.getText('colors.search')"
-        placeholder-class="search-placeholder"
-      />
+      <uni-icons type="search" size="16" color="#666" />
+      <input type="text" v-model="searchKeyword" :placeholder="LocaleUtils.getText('colors.search')"
+        placeholder-class="search-placeholder" />
     </view>
 
     <!-- 历史记录列表 -->
     <view class="history-list" scroll-y>
-      <view 
-        class="history-item-wrapper" 
-        v-for="(item, index) in filteredHistory" 
-        :key="index"
-        @touchstart="touchStart($event, index)"
-        @touchmove="touchMove($event, index)"
-        @touchend="touchEnd($event, index)"
-      >
-        <view class="history-item" :style="{ transform: `translateX(${item.offset || 0}px)` }" @click="goToColorDetail(item)">
+      <view class="history-item-wrapper" v-for="(item, index) in filteredHistory" :key="index"
+        @touchstart="touchStart($event, index)" @touchmove="touchMove($event, index)"
+        @touchend="touchEnd($event, index)">
+        <view class="history-item" :style="{ transform: `translateX(${item.offset || 0}px)` }"
+          @click="goToColorDetail(item)">
           <view class="color-circle" :style="{ backgroundColor: item.hex }"></view>
           <view class="color-info">
             <view class="color-name">{{ item.name }}</view>
@@ -43,17 +35,19 @@
           </view>
           <view class="color-time">{{ formatDate(item.timestamp) }}</view>
           <view class="favorite-btn" @click.stop="toggleFavorite(item)">
-            <uni-icons :type="isFavorite(item) ? 'star-filled' : 'star'" size="20" :color="isFavorite(item) ? '#FFD700' : '#999'" />
+            <uni-icons :type="isFavorite(item) ? 'star-filled' : 'star'" size="20"
+              :color="isFavorite(item) ? '#FFD700' : '#999'" />
           </view>
         </view>
         <view class="delete-btn" @click="deleteHistoryItem(index)">
           <uni-icons type="trash" size="20" color="#fff" />
         </view>
       </view>
-      
+
       <view class="empty-history" v-if="colorHistory.length === 0">
         <uni-icons type="info" size="64" color="#ccc" />
-        <text>{{ searchKeyword ? LocaleUtils.getText('colors.noResult') : LocaleUtils.getText('history.noHistory') }}</text>
+        <text>{{ searchKeyword ? LocaleUtils.getText('colors.noResult') : LocaleUtils.getText('history.noHistory')
+          }}</text>
       </view>
     </view>
   </view>
@@ -83,12 +77,13 @@ export default {
     // 每次显示页面时重新加载历史记录
     this.loadHistory();
     this.loadFavoriteColors();
+    LocaleUtils.updateTabBar();
   },
   computed: {
     filteredHistory() {
       if (!this.searchKeyword) return this.colorHistory;
       const keyword = this.searchKeyword.toLowerCase();
-      return this.colorHistory.filter(item => 
+      return this.colorHistory.filter(item =>
         item.name.toLowerCase().includes(keyword)
       );
     }
@@ -109,7 +104,7 @@ export default {
         });
       }
     },
-    
+
     // 加载收藏的颜色
     loadFavoriteColors() {
       try {
@@ -121,12 +116,12 @@ export default {
         console.error('读取收藏颜色失败', e);
       }
     },
-    
+
     // 检查颜色是否已收藏
     isFavorite(color) {
       return this.favoriteColors.some(item => item.hex === color.hex);
     },
-    
+
     // 切换收藏状态
     toggleFavorite(color) {
       const index = this.favoriteColors.findIndex(item => item.hex === color.hex);
@@ -156,7 +151,7 @@ export default {
         });
       }
     },
-    
+
     // 格式化日期
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -165,15 +160,15 @@ export default {
       const year = date.getFullYear();
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
-      
+
       return `${day} ${month} ${year} ${hours}:${minutes}`;
     },
-    
+
     // 返回上一页
     goBack() {
       uni.navigateBack();
     },
-    
+
     // 显示删除确认对话框
     showDeleteConfirm() {
       uni.showModal({
@@ -188,7 +183,7 @@ export default {
         }
       });
     },
-    
+
     // 清空历史记录
     clearHistory() {
       try {
@@ -218,7 +213,7 @@ export default {
     // 触摸移动
     touchMove(event, index) {
       if (this.currentIndex !== index) return;
-      
+
       const touch = event.touches[0];
       const moveX = touch.clientX - this.touchStartX;
       const moveY = touch.clientY - this.touchStartY;
@@ -250,10 +245,10 @@ export default {
     // 触摸结束
     touchEnd(event, index) {
       if (this.currentIndex !== index) return;
-      
+
       // const item = this.colorHistory[index];
       // const offset = item.offset || 0;
-      
+
       // // 根据滑动距离决定是否显示删除按钮
       // if (Math.abs(offset) > this.deleteButtonWidth / 2) {
       //   this.$set(this.colorHistory[index], 'offset', -this.deleteButtonWidth);
@@ -268,7 +263,7 @@ export default {
       //     deleteBtn.style.transform = `translateX(${this.deleteButtonWidth}px)`;
       //   }
       // }
-      
+
       // this.currentIndex = -1;
     },
 
@@ -289,7 +284,7 @@ export default {
         });
       }
     },
-    
+
     // 跳转到颜色详情页
     goToColorDetail(color) {
       // 将颜色对象转为字符串传递

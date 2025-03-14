@@ -1,4 +1,9 @@
 export default {
+    tabBar: {
+        my: 'My',
+        record: 'Record',
+        picker: 'Picker'
+    },
     common: {
         colorPicker: 'Color Picker',
         colors: 'Colors',

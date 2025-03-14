@@ -44,7 +44,8 @@
                 <view class="my-categories">
                     <view class="category-item" @click="navigateToFavorites">
                         <uni-icons type="heart-filled" color="#666" />
-                        <text style="padding-left: 0.2rem;font-size: 1.1rem;">{{ LocaleUtils.getText('common.favorite') }}</text>
+                        <text style="padding-left: 0.2rem;font-size: 1.1rem;">{{ LocaleUtils.getText('common.favorite')
+                            }}</text>
                     </view>
                     <view class="category-item add-group" @click="showAddGroupDialog">
                         <uni-icons type="plus" size="20" color="#666" />
@@ -56,7 +57,8 @@
                         @click="handleGroupItemClick($event, group.id)">
                         <view class="group-info">
                             <text class="group-name">{{ group.name }}</text>
-                            <text class="color-count">{{ group.colors.length }}{{ LocaleUtils.getText('my.colorCount') }}</text>
+                            <text class="color-count">{{ group.colors.length }}{{ LocaleUtils.getText('my.colorCount')
+                                }}</text>
                         </view>
                         <view class="group-actions">
                             <uni-icons type="trash" size="25" color="#666" data-action="delete" />
@@ -97,13 +99,30 @@
                     <text>{{ LocaleUtils.getText('my.language') }}</text>
                 </view>
                 <view class="panel-body">
-                    <view class="language-option" :class="{ active: currentLanguage === 'zh-CN' }" @click="changeLanguage('zh-CN')">
+                    <view class="language-option" :class="{ active: currentLanguage === 'zh-CN' }"
+                        @click="changeLanguage('zh-CN')">
                         <text>简体中文</text>
                         <uni-icons v-if="currentLanguage === 'zh-CN'" type="checkmarkempty" size="20" color="#007AFF" />
                     </view>
-                    <view class="language-option" :class="{ active: currentLanguage === 'en-US' }" @click="changeLanguage('en-US')">
+                    <view class="language-option" :class="{ active: currentLanguage === 'zh-TW' }"
+                        @click="changeLanguage('zh-TW')">
+                        <text>繁體中文</text>
+                        <uni-icons v-if="currentLanguage === 'zh-TW'" type="checkmarkempty" size="20" color="#007AFF" />
+                    </view>
+                    <view class="language-option" :class="{ active: currentLanguage === 'ja-JP' }"
+                        @click="changeLanguage('ja-JP')">
+                        <text>日本語</text>
+                        <uni-icons v-if="currentLanguage === 'ja-JP'" type="checkmarkempty" size="20" color="#007AFF" />
+                    </view>
+                    <view class="language-option" :class="{ active: currentLanguage === 'en-US' }"
+                        @click="changeLanguage('en-US')">
                         <text>English</text>
                         <uni-icons v-if="currentLanguage === 'en-US'" type="checkmarkempty" size="20" color="#007AFF" />
+                    </view>
+                    <view class="language-option" :class="{ active: currentLanguage === 'fr-FR' }"
+                        @click="changeLanguage('fr-FR')">
+                        <text>Français</text>
+                        <uni-icons v-if="currentLanguage === 'fr-FR'" type="checkmarkempty" size="20" color="#007AFF" />
                     </view>
                 </view>
             </view>
@@ -131,6 +150,7 @@ export default {
     },
     onShow() {
         this.loadGroups()
+        LocaleUtils.updateTabBar();
     },
     methods: {
         loadGroups() {

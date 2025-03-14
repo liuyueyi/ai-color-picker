@@ -215,8 +215,10 @@
         </picker>
       </view>
       <view class="dialog-footer">
-        <button class="dialog-btn cancel-btn" @click="cancelSaveColor">{{ LocaleUtils.getText('common.cancel') }}</button>
-        <button class="dialog-btn confirm-btn" @click="confirmSaveColor">{{ LocaleUtils.getText('common.confirm') }}</button>
+        <button class="dialog-btn cancel-btn" @click="cancelSaveColor">{{ LocaleUtils.getText('common.cancel')
+          }}</button>
+        <button class="dialog-btn confirm-btn" @click="confirmSaveColor">{{ LocaleUtils.getText('common.confirm')
+          }}</button>
       </view>
     </view>
   </view>
@@ -246,6 +248,20 @@ export default {
       colorGroups: [], // 颜色分组
       selectedGroup: '', // 选中的分组
     }
+  },
+  onShow() {
+    uni.setTabBarItem({
+      index: 0,
+      text: LocaleUtils.getText('tabBar.picker')
+    })
+    uni.setTabBarItem({
+      index: 1,
+      text: LocaleUtils.getText('tabBar.record')
+    })
+    uni.setTabBarItem({
+      index: 2,
+      text: LocaleUtils.getText('tabBar.my')
+    })
   },
   onLoad() {
     try {

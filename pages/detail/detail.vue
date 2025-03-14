@@ -124,9 +124,11 @@
     </view>
 
     <view class="float-btns">
+      <!-- #ifndef APP-PLUS -->
       <view class="palette-float-btn" @click="doShowColorPicker" :style="{ backgroundColor: color.hex }">
         <uni-icons type="color" size="24" :color="getContrastColor()" />
       </view>
+      <!-- #endif  -->
       <view class="favorite-float-btn" @click="toggleFavorite" :style="{ backgroundColor: color.hex }">
         <uni-icons :type="isFavorite ? 'star-filled' : 'star'" size="24" :color="getContrastColor()" />
       </view>

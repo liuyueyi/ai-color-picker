@@ -33,7 +33,7 @@
 
 .color-grid {
     flex: 1;
-    height: 0;
+    height: 100vh;
     padding: 15px 15px 0px 15px;
     box-sizing: border-box;
 }

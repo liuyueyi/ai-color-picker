@@ -1,458 +1,458 @@
 /* 全局样式 */
 .content {
-    display: flex;
-    flex-direction: column;
-    height: 88vh;
-    overflow: hidden;
-    margin-top: var(--status-bar-height);
-    /* 防止整体滚动和回弹 */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    -webkit-overflow-scrolling: none;
-    overscroll-behavior: none;
-    touch-action: none;
-  }
-  
-  /* 工具栏样式 */
-  .toolbar {
-    padding: 10px;
-    flex-shrink: 0;
-    /* 防止工具栏被压缩 */
-    border-bottom: 1px solid #e0e0e0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    position: relative;
-    z-index: 10;
-  }
-  
-  .toolbar-icons {
-    display: flex;
-    justify-content: right;
-  }
-  
-  .icon-item {
-    padding: 5px;
-  }
-  
-  /* 图片容器样式 */
-  .image-container {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    min-height: 0;
-    /* 允许容器缩小 */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    /* margin: 10px; */
-    /* border-radius: 8px; */
-  }
-  
-  
-  .grid-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-size: 20px 20px;
-    background-image:
-      linear-gradient(to right, rgba(200, 200, 200, 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
-    pointer-events: none;
-    /* 确保点击事件可以穿透到图片 */
-    z-index: 1;
-  }
-  
-  .image-container image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .empty-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #f5f5f5;
-    min-height: 0;
-    /* 允许容器缩小 */
-  }
-  
-  .empty-text {
-    margin-top: 20px;
-    color: #999;
-    font-size: 16px;
-  }
-  
-  .color-picker-indicator {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .color-picker-indicator::before,
-  .color-picker-indicator::after {
-    content: '';
-    position: absolute;
-    background-color: white;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  }
-  
-  .color-picker-indicator::before {
-    width: 8px;
-    height: 2px;
-  }
-  
-  .color-picker-indicator::after {
-    width: 2px;
-    height: 8px;
-  }
-  
-  /* 颜色显示区域样式 */
-  .color-display {
-    position: fixed;
-    bottom: calc(constant(safe-area-inset-bottom));
-    bottom: calc(env(safe-area-inset-bottom));
-    /* #ifdef APP-PLUS */
-    height: 4.5rem;
-    /* #endif */
-    /* #ifndef APP-PLUS */
-    height: 6rem;
-    /* #endif */
-    left: 0;
-    right: 0;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    z-index: 100;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-  }
-  
-  .details-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 5px 15px;
-    border-radius: 20px;
-  }
+  display: flex;
+  flex-direction: column;
+  height: 88vh;
+  overflow: hidden;
+  margin-top: var(--status-bar-height);
+  /* 防止整体滚动和回弹 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-overflow-scrolling: none;
+  overscroll-behavior: none;
+  touch-action: none;
+}
 
-  .details-save-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 5px 15px;
-    border-radius: 20px;
-  }
-  
-  .color-details-container {
-    position: fixed;
-    left: 0;
-    right: 0;
-    /* #ifdef APP-PLUS */
-    bottom: calc(constant(safe-area-inset-bottom) + 4.5rem);
-    bottom: calc(env(safe-area-inset-bottom) + 4.5rem);
-    /* #endif */
-    /* #ifndef APP-PLUS */
-    bottom: calc(constant(safe-area-inset-bottom) + 6rem);
-    bottom: calc(env(safe-area-inset-bottom) + 6rem);
-    /* #endif */
-    max-width: 70vw;
-    z-index: 99;
-    border-radius: 16px 16px 0 0;
-    overflow: hidden;
-  }
-  
-  .color-details {
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 15px;
-    height: 100%;
-    max-height: 100%;
-    overflow-y: auto;
-  }
-  
-  .detail-item {
-    margin-bottom: 15px;
-  }
-  
-  .detail-header {
-    display: flex;
-    justify-content: space-between;
-    color: white;
-    margin-bottom: 5px;
-  }
-  
-  .gradient-bar {
-    height: 10px;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  
-  .temperature-bar {
-    position: relative;
-    margin-top: 5px;
-  }
-  
-  .temperature-indicator {
-    position: absolute;
-    top: -5px;
-    width: 3px;
-    height: 15px;
-    background-color: #fff;
-    border-radius: 1px;
-    transform: translateX(-50%);
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-  }
-  
-  .temperature-gradient {
-    background: linear-gradient(to right, #ff0000, #ffff00, #ffffff, #aaaaff);
-  }
-  
-  .wavelength-bar {
-    position: relative;
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .wavelength-label {
-    color: white;
-    font-size: 12px;
-    margin: 0 5px;
-  }
-  
-  .wavelength-label.left {
-    float: left;
-  }
-  
-  .wavelength-label.right {
-    float: right;
-  }
-  
-  .gradient-bar {
-    height: 10px;
-    border-radius: 5px;
-    overflow: hidden;
-    flex: 1;
-  }
-  
-  .wavelength-gradient {
-    background: linear-gradient(to right, #9900ff, #0000ff, #00ff00, #ffff00, #ff0000);
-    width: 100%;
-  }
-  
-  .wavelength-indicator {
-    position: absolute;
-    width: 3px;
-    height: 15px;
-    background-color: #fff;
-    border-radius: 1px;
-    transform: translateX(-50%);
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-    z-index: 2;
-  }
-  
-  .luminance-bar {
-    position: relative;
-    margin-top: 5px;
-  }
-  
-  .luminance-background {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0.2));
-    height: 12px;
-  }
-  
-  .luminance-fill {
-    background: linear-gradient(to right, rgba(100, 100, 100, 0.9), rgba(255, 255, 255, 0.9));
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
-    height: 100%;
-  }
-  
-  .progress-bar {
-    height: 10px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 5px 0;
-  }
-  
-  .progress-fill {
-    height: 100%;
-    border-radius: 5px;
-  }
-  
-  .red {
-    background-color: #ff0000;
-  }
-  
-  .green {
-    background-color: #00ff00;
-  }
-  
-  .blue {
-    background-color: #0000ff;
-  }
-  
-  .cyan {
-    background-color: #00ffff;
-  }
-  
-  .magenta {
-    background-color: #00ff00;
-  }
-  
-  .yellow {
-    background-color: #ffff00;
-  }
-  
-  .black {
-    background-color: #ffffff;
-  }
-  
-  .hue-gradient {
-    background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
-    width: 100%;
-  }
-  
-  .saturation-gradient {
-    background: linear-gradient(to right, #808080, #ff0000);
-    width: 100%;
-  }
-  
-  .color-bar {
-    display: flex;
-    align-items: center;
-    color: white;
-    margin-bottom: 5px;
-  }
-  
-  .color-bar text {
-    width: 30px;
-  }
-  
-  .color-bar .progress-bar {
-    flex: 1;
-    margin: 0 10px;
-  }
-  
-  .rgb-bars,
-  .cmyk-bars,
-  .hsl-bars {
-    margin-top: 5px;
-  }
-  .hsl-indicator {
-    position: absolute;
-    width: 3px;
-    height: 15px;
-    background-color: #fff;
-    border-radius: 1px;
-    transform: translateY(-80%);
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-  }
+/* 工具栏样式 */
+.toolbar {
+  padding: 10px;
+  flex-shrink: 0;
+  /* 防止工具栏被压缩 */
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
+}
 
-  .hlv-bars {
-    margin-top: 5px;
-  }
-  
-  .hlv-indicator {
-    position: absolute;
-    width: 3px;
-    height: 15px;
-    background-color: #fff;
-    border-radius: 1px;
-    transform: translateY(-80%);
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-  }
-  
+.toolbar-icons {
+  display: flex;
+  justify-content: right;
+}
 
-  .lightness-gradient {
-    background: linear-gradient(to right, #000000, var(--current-color), #ffffff);
-  }
-  .save-button {
-    background-color: #2196F3;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 15px;
-  }
-  
-  /* 弹窗样式 */
-  .dialog-mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .dialog-container {
-    width: 80%;
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  
-  .dialog-header {
-    padding: 15px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .dialog-content {
-    padding: 20px;
-  }
-  
-  .color-preview {
-    width: 100%;
-    height: 60px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-  }
-  
-  .name-input {
-    width: 100%;
-    height: 40px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    margin-bottom: 5px;
-  }
+.icon-item {
+  padding: 5px;
+}
 
-  
-.group-picker {
+/* 图片容器样式 */
+.image-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  /* 允许容器缩小 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  /* margin: 10px; */
+  /* border-radius: 8px; */
+}
+
+
+.grid-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: 20px 20px;
+  background-image:
+    linear-gradient(to right, rgba(200, 200, 200, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
+  pointer-events: none;
+  /* 确保点击事件可以穿透到图片 */
+  z-index: 1;
+}
+
+.image-container image {
   width: 100%;
+  height: 100%;
+  object-fit: contain;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.empty-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  min-height: 0;
+  /* 允许容器缩小 */
+}
+
+.empty-text {
+  margin-top: 20px;
+  color: #999;
+  font-size: 16px;
+}
+
+.color-picker-indicator {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-picker-indicator::before,
+.color-picker-indicator::after {
+  content: '';
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.color-picker-indicator::before {
+  width: 8px;
+  height: 2px;
+}
+
+.color-picker-indicator::after {
+  width: 2px;
+  height: 8px;
+}
+
+/* 颜色显示区域样式 */
+.color-display {
+  position: fixed;
+  bottom: calc(constant(safe-area-inset-bottom));
+  bottom: calc(env(safe-area-inset-bottom));
+  /* #ifdef APP-PLUS */
+  height: 4.5rem;
+  /* #endif */
+  /* #ifndef APP-PLUS */
+  height: 6rem;
+  /* #endif */
+  left: 0;
+  right: 0;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.details-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 5px 15px;
+  border-radius: 20px;
+}
+
+.details-save-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 5px 15px;
+  border-radius: 20px;
+}
+
+.color-details-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  /* #ifdef APP-PLUS */
+  bottom: calc(constant(safe-area-inset-bottom) + 4.5rem);
+  bottom: calc(env(safe-area-inset-bottom) + 4.5rem);
+  /* #endif */
+  /* #ifndef APP-PLUS */
+  bottom: calc(constant(safe-area-inset-bottom) + 6rem);
+  bottom: calc(env(safe-area-inset-bottom) + 6rem);
+  /* #endif */
+  max-width: 70vw;
+  z-index: 99;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.color-details {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.detail-item {
+  margin-bottom: 15px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.gradient-bar {
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.temperature-bar {
+  position: relative;
+  margin-top: 5px;
+}
+
+.temperature-indicator {
+  position: absolute;
+  top: -5px;
+  width: 3px;
+  height: 15px;
+  background-color: #fff;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.temperature-gradient {
+  background: linear-gradient(to right, #ff0000, #ffff00, #ffffff, #aaaaff);
+}
+
+.wavelength-bar {
+  position: relative;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.wavelength-label {
+  color: white;
+  font-size: 12px;
+  margin: 0 5px;
+}
+
+.wavelength-label.left {
+  float: left;
+}
+
+.wavelength-label.right {
+  float: right;
+}
+
+.gradient-bar {
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.wavelength-gradient {
+  background: linear-gradient(to right, #9900ff, #0000ff, #00ff00, #ffff00, #ff0000);
+  width: 100%;
+}
+
+.wavelength-indicator {
+  position: absolute;
+  width: 3px;
+  height: 15px;
+  background-color: #fff;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.luminance-bar {
+  position: relative;
+  margin-top: 5px;
+}
+
+.luminance-background {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0.2));
+  height: 12px;
+}
+
+.luminance-fill {
+  background: linear-gradient(to right, rgba(100, 100, 100, 0.9), rgba(255, 255, 255, 0.9));
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+  height: 100%;
+}
+
+.progress-bar {
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 5px;
+}
+
+.red {
+  background-color: #ff0000;
+}
+
+.green {
+  background-color: #00ff00;
+}
+
+.blue {
+  background-color: #0000ff;
+}
+
+.cyan {
+  background-color: #00ffff;
+}
+
+.magenta {
+  background-color: #00ff00;
+}
+
+.yellow {
+  background-color: #ffff00;
+}
+
+.black {
+  background-color: #ffffff;
+}
+
+.hue-gradient {
+  background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+  width: 100%;
+}
+
+.saturation-gradient {
+  background: linear-gradient(to right, #808080, #ff0000);
+  width: 100%;
+}
+
+.color-bar {
+  display: flex;
+  align-items: center;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.color-bar text {
+  width: 30px;
+}
+
+.color-bar .progress-bar {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.rgb-bars,
+.cmyk-bars,
+.hsl-bars {
+  margin-top: 5px;
+}
+
+.hsl-indicator {
+  position: absolute;
+  width: 3px;
+  height: 15px;
+  background-color: #fff;
+  border-radius: 1px;
+  transform: translateY(-80%);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.hlv-bars {
+  margin-top: 5px;
+}
+
+.hlv-indicator {
+  position: absolute;
+  width: 3px;
+  height: 15px;
+  background-color: #fff;
+  border-radius: 1px;
+  transform: translateY(-80%);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+
+.lightness-gradient {
+  background: linear-gradient(to right, #000000, var(--current-color), #ffffff);
+}
+
+.save-button {
+  background-color: #2196F3;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+/* 弹窗样式 */
+.dialog-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-container {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.dialog-header {
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+.dialog-content {
+  padding: 20px;
+}
+
+.color-preview {
+  width: 100%;
+  height: 60px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.name-input {
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+
+.group-picker {
   height: 40px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -464,25 +464,25 @@
   padding: 0 10px;
   color: #333;
 }
-  
-  .dialog-footer {
-    display: flex;
-    border-top: 1px solid #eee;
-  }
-  
-  .dialog-btn {
-    flex: 1;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-  }
-  
-  .cancel-btn {
-    color: #666;
-    border-right: 1px solid #eee;
-  }
-  
-  .confirm-btn {
-    color: #2196F3;
-  }
+
+.dialog-footer {
+  display: flex;
+  border-top: 1px solid #eee;
+}
+
+.dialog-btn {
+  flex: 1;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.cancel-btn {
+  color: #666;
+  border-right: 1px solid #eee;
+}
+
+.confirm-btn {
+  color: #2196F3;
+}

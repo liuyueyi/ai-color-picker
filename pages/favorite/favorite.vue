@@ -5,7 +5,7 @@
       <view class="navbar-left" @click="goBack">
         <uni-icons type="left" size="20" />
       </view>
-      <view class="navbar-title">Favorite Color</view>
+      <view class="navbar-title">{{ LocaleUtils.getText('favorite.title') }}</view>
       <view class="navbar-right">
         <uni-icons type="home" size="20" style="margin-left: 15px;" @click="goHome" />
       </view>
@@ -40,17 +40,20 @@
       <!-- 空状态提示 -->
       <view class="empty-state" v-else>
         <uni-icons type="star" size="64" color="#ccc" />
-        <text class="empty-text">暂无收藏的颜色</text>
-        <text class="empty-subtext">您可以在浏览颜色时点击星标收藏喜欢的颜色</text>
+        <text class="empty-text">{{ LocaleUtils.getText('favorite.noFavorites') }}</text>
+        <text class="empty-subtext">{{ LocaleUtils.getText('favorite.addToFavorites') }}</text>
       </view>
     </scroll-view>
   </view>
 </template>
 
 <script>
+import LocaleUtils from '@/utils/LocaleUtils.js'
+
 export default {
   data() {
     return {
+      LocaleUtils,
       favoriteColors: []
     }
   },
@@ -71,7 +74,6 @@ export default {
     },
     goHome() {
       // 返回主页
-      // 返回主页
       uni.reLaunch({
         url: '/pages/index/index',
         success: () => {
@@ -80,7 +82,7 @@ export default {
         fail: (err) => {
           console.error('返回主页失败', err);
           uni.showToast({
-            title: '返回主页失败',
+            title: LocaleUtils.getText('common.backHomeError'),
             icon: 'none'
           });
         }
@@ -97,7 +99,7 @@ export default {
       } catch (e) {
         console.error('加载收藏颜色失败', e)
         uni.showToast({
-          title: '加载失败',
+          title: LocaleUtils.getText('common.loadFailed'),
           icon: 'none'
         })
       }

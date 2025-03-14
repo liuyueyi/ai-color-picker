@@ -7,11 +7,13 @@ export default {
         history: 'History',
         my: 'My',
         cancel: 'Cancel',
-        confirm: 'Confirm'
+        confirm: 'Confirm',
+        loadFailed: 'Load Failed',
+        backHomeError: 'Failed to return to home page'
     },
     colors: {
         title: 'Color List',
-        search: 'Search Colors',
+        search: 'Search Colors by Name or Hex Value',
         noResult: 'No colors found'
     },
     detail: {
@@ -28,12 +30,23 @@ export default {
         deleteGroup: 'Delete Group',
         groupName: 'Group Name',
         cancel: 'Cancel',
-        confirm: 'Confirm'
+        confirm: 'Confirm',
+        addSuccess: 'Added to favorites',
+        removeSuccess: 'Removed from favorites',
+        operationFailed: 'Operation failed',
+        groups: {
+            noColors: 'No colors in this group',
+            addColors: 'Add colors to this group',
+            groupNotExist: 'Group does not exist'
+        }
     },
     history: {
         title: 'History',
         noHistory: 'No history yet',
-        clearHistory: 'Clear History'
+        clearHistory: 'Clear History',
+        clearContent: 'Are you sure you want to clear all history?',
+        deleteSuccess: 'Deleted successfully',
+        deleteFailed: 'Delete failed'
     },
     my: {
         title: 'Profile',
@@ -43,6 +56,9 @@ export default {
         systemColors: 'System Colors',
         chineseColors: 'Chinese Traditional Colors',
         japaneseColors: 'Japanese Traditional Colors',
+        ukColors: 'UK Traditional Colors',
+        usaColors: 'USA Traditional Colors',
+        franceColors: 'French Traditional Colors',
         colorCount: ' colors',
         noGroups: 'No groups yet',
         editGroup: 'Edit Group',
@@ -62,6 +78,9 @@ export default {
         selectGroup: 'Select Group',
         pleaseEnterColorName: 'Please enter color name',
         colorSaved: 'Color saved successfully',
-        saveFailed: 'Save failed'
+        saveFailed: 'Save failed',
+        cameraPermissionRequired: 'Camera permission is required to take photos',
+        selectImageFailed: 'Failed to select image',
+        colorExtractionFailed: 'Color extraction failed, please try again'
     }
 }

@@ -23,6 +23,15 @@
                     <view class="category-item" @click="navigateToCategory('japanese')">
                         <text>{{ LocaleUtils.getText('my.japaneseColors') }}</text>
                     </view>
+                    <view class="category-item" @click="navigateToCategory('uk')">
+                        <text>{{ LocaleUtils.getText('my.ukColors') }}</text>
+                    </view>
+                    <view class="category-item" @click="navigateToCategory('usa')">
+                        <text>{{ LocaleUtils.getText('my.usaColors') }}</text>
+                    </view>
+                    <view class="category-item" @click="navigateToCategory('france')">
+                        <text>{{ LocaleUtils.getText('my.franceColors') }}</text>
+                    </view>
                 </view>
             </view>
 

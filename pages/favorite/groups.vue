@@ -40,19 +40,21 @@
             <!-- 空状态提示 -->
             <view class="empty-state" v-else>
                 <uni-icons type="star" size="64" color="#ccc" />
-                <text class="empty-text">暂无颜色数据</text>
-                <text class="empty-subtext">请添加颜色到这个分组吧~</text>
+                <text class="empty-text">{{ LocaleUtils.getText('favorite.groups.noColors') }}</text>
+                <text class="empty-subtext">{{ LocaleUtils.getText('favorite.groups.addColors') }}</text>
             </view>
         </scroll-view>
     </view>
 </template>
 
 <script>
-import  GroupUtils  from '../../utils/GroupUtils.js'
+import GroupUtils from '../../utils/GroupUtils.js'
+import LocaleUtils from '../../utils/LocaleUtils.js'
 
 export default {
     data() {
         return {
+            LocaleUtils,
             colors: [],
             groupId: null,
             groupName: ''
@@ -79,7 +81,7 @@ export default {
                 fail: (err) => {
                     console.error('返回主页失败', err)
                     uni.showToast({
-                        title: '返回主页失败',
+                        title: LocaleUtils.getText('common.backHomeError'),
                         icon: 'none'
                     })
                 }
@@ -96,14 +98,14 @@ export default {
                     console.log('colors', this.colors);
                 } else {
                     uni.showToast({
-                        title: '分组不存在',
+                        title: LocaleUtils.getText('favorite.groups.groupNotExist'),
                         icon: 'none'
                     })
                 }
             } catch (e) {
                 console.error('加载颜色数据失败', e)
                 uni.showToast({
-                    title: '加载失败',
+                    title: LocaleUtils.getText('common.loadFailed'),
                     icon: 'none'
                 })
             }

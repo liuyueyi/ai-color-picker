@@ -215,10 +215,8 @@
         </picker>
       </view>
       <view class="dialog-footer">
-        <button class="dialog-btn cancel-btn" @click="cancelSaveColor">{{ LocaleUtils.getText('common.cancel')
-          }}</button>
-        <button class="dialog-btn confirm-btn" @click="confirmSaveColor">{{ LocaleUtils.getText('common.confirm')
-          }}</button>
+        <button class="dialog-btn cancel-btn" @click="cancelSaveColor">{{ LocaleUtils.getText('common.cancel') }}</button>
+        <button class="dialog-btn confirm-btn" @click="confirmSaveColor">{{ LocaleUtils.getText('common.confirm') }}</button>
       </view>
     </view>
   </view>
@@ -316,7 +314,7 @@ export default {
             } else {
               // 用户拒绝了权限
               uni.showToast({
-                title: '需要相机权限才能拍照',
+                title: LocaleUtils.getText('index.cameraPermissionRequired'),
                 icon: 'none'
               });
             }
@@ -345,7 +343,7 @@ export default {
         fail: (err) => {
           console.error('选择图片失败:', err);
           uni.showToast({
-            title: '选择图片失败',
+            title: LocaleUtils.getText('index.selectImageFailed'),
             icon: 'none'
           });
         }
@@ -519,7 +517,7 @@ export default {
                   fail: err => {
                     console.error('获取像素颜色失败:', err);
                     uni.showToast({
-                      title: '颜色提取失败，重新再试试吧',
+                      title: LocaleUtils.getText('index.colorExtractionFailed'),
                       icon: 'error'
                     });
                   }
@@ -529,7 +527,7 @@ export default {
           },
           fail: err => {
             uni.showToast({
-              title: '颜色提取失败，重新再试试吧',
+              title: LocaleUtils.getText('index.colorExtractionFailed'),
               icon: 'error'
             });
           }

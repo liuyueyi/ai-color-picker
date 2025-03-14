@@ -5,7 +5,7 @@
       <view class="navbar-left" @click="goBack">
         <!-- <uni-icons type="left" size="20" color="#fff" /> -->
       </view>
-      <view class="navbar-title">History</view>
+      <view class="navbar-title">{{ LocaleUtils.getText('history.title') }}</view>
       <view class="navbar-right">
         <uni-icons type="trash" size="20" color="#333" @click="showDeleteConfirm" />
         <!-- 待添加一个分组检索功能 -->
@@ -19,7 +19,7 @@
       <input 
         type="text" 
         v-model="searchKeyword"
-        placeholder="search by color name"
+        :placeholder="LocaleUtils.getText('colors.search')"
         placeholder-class="search-placeholder"
       />
     </view>
@@ -53,23 +53,26 @@
       
       <view class="empty-history" v-if="colorHistory.length === 0">
         <uni-icons type="info" size="64" color="#ccc" />
-        <text>{{ searchKeyword ? 'No records found(未找到相關記錄)' : 'No History Records(暫無歷史記錄)' }}</text>
+        <text>{{ searchKeyword ? LocaleUtils.getText('colors.noResult') : LocaleUtils.getText('history.noHistory') }}</text>
       </view>
     </view>
   </view>
 </template>
 
 <script>
+import LocaleUtils from '../../utils/LocaleUtils.js'
+
 export default {
   data() {
     return {
+      LocaleUtils,
       colorHistory: [],
       favoriteColors: [],
       touchStartX: 0,
       touchStartY: 0,
       currentIndex: -1,
       deleteButtonWidth: 80,
-      searchKeyword: '' // 添加搜索关键字
+      searchKeyword: ''
     }
   },
   onLoad() {
@@ -131,14 +134,14 @@ export default {
         // 添加到收藏
         this.favoriteColors.push(color);
         uni.showToast({
-          title: '已添加到收藏',
+          title: LocaleUtils.getText('favorite.addSuccess'),
           icon: 'success'
         });
       } else {
         // 取消收藏
         this.favoriteColors.splice(index, 1);
         uni.showToast({
-          title: '已取消收藏',
+          title: LocaleUtils.getText('favorite.removeSuccess'),
           icon: 'none'
         });
       }
@@ -148,7 +151,7 @@ export default {
       } catch (e) {
         console.error('保存收藏失败', e);
         uni.showToast({
-          title: '操作失败',
+          title: LocaleUtils.getText('favorite.operationFailed'),
           icon: 'none'
         });
       }
@@ -174,8 +177,10 @@ export default {
     // 显示删除确认对话框
     showDeleteConfirm() {
       uni.showModal({
-        title: '清空历史记录',
-        content: '确定要清空所有历史记录吗？',
+        title: LocaleUtils.getText('history.clearHistory'),
+        content: LocaleUtils.getText('history.clearContent'),
+        cancelText: LocaleUtils.getText('common.cancel'),
+        confirmText: LocaleUtils.getText('common.confirm'),
         success: (res) => {
           if (res.confirm) {
             this.clearHistory();
@@ -190,13 +195,13 @@ export default {
         uni.removeStorageSync('colorHistory');
         this.colorHistory = [];
         uni.showToast({
-          title: '历史记录已清空',
+          title: LocaleUtils.getText('history.clearHistory'),
           icon: 'success'
         });
       } catch (e) {
         console.error('清空历史记录失败', e);
         uni.showToast({
-          title: '清空失败',
+          title: LocaleUtils.getText('index.saveFailed'),
           icon: 'none'
         });
       }
@@ -273,13 +278,13 @@ export default {
       try {
         uni.setStorageSync('colorHistory', JSON.stringify(this.colorHistory));
         uni.showToast({
-          title: '已删除',
+          title: LocaleUtils.getText('history.deleteSuccess'),
           icon: 'success'
         });
       } catch (e) {
         console.error('删除历史记录失败', e);
         uni.showToast({
-          title: '删除失败',
+          title: LocaleUtils.getText('history.deleteFailed'),
           icon: 'none'
         });
       }

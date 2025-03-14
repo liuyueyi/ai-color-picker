@@ -18,7 +18,7 @@
           <input
             type="text"
             v-model="searchQuery"
-            placeholder="搜索颜色名称或十六进制值"
+            :placeholder="LocaleUtils.getText('colors.search')"
             class="search-input"
             @input="handleSearch"
           />
@@ -60,10 +60,10 @@
         <!-- 空状态提示 -->
         <view class="empty-state" v-else>
           <uni-icons type="search" size="64" color="#ccc" />
-          <text class="empty-text" v-if="searchQuery">未找到相关颜色</text>
-          <text class="empty-text" v-else>暂无颜色数据</text>
-          <text class="empty-subtext" v-if="searchQuery">请尝试其他搜索关键词</text>
-          <text class="empty-subtext" v-else>系统错误，请稍后重试</text>
+          <text class="empty-text" v-if="searchQuery">{{ LocaleUtils.getText('colors.noResult') }}</text>
+          <text class="empty-text" v-else>{{ LocaleUtils.getText('colors.noResult') }}</text>
+          <text class="empty-subtext" v-if="searchQuery">{{ LocaleUtils.getText('colors.search') }}</text>
+          <text class="empty-subtext" v-else>{{ LocaleUtils.getText('colors.noResult') }}</text>
         </view>
       </scroll-view>
 
@@ -77,12 +77,15 @@
   <script>
   import chinaColors from '../../utils/china_color.js'
   import japaneseColors from '../../utils/janpan_color.js'
-  import ColorUtil from '../../utils/colorUtils.js'
-import ColorUtils from '../../utils/colorUtils.js'
+  import ukColors from '../../utils/uk_color.js'
+  import usaColors from '../../utils/usa_color.js'
+  import franceColors from '../../utils/france_color.js'
+  import LocaleUtils from '../../utils/LocaleUtils.js'
 
   export default {
     data() {
       return {
+        LocaleUtils,
         colors: [],
         pageTitle: '',
         searchQuery: '',
@@ -125,7 +128,7 @@ import ColorUtils from '../../utils/colorUtils.js'
           fail: (err) => {
             console.error('返回主页失败', err)
             uni.showToast({
-              title: '返回主页失败',
+              title: LocaleUtils.getText('common.backHomeError'),
               icon: 'none'
             })
           }
@@ -153,17 +156,26 @@ import ColorUtils from '../../utils/colorUtils.js'
         try {
           if (type === 'chinese') {
             this.colors = chinaColors
-            this.pageTitle = '中国传统色'
+            this.pageTitle = LocaleUtils.getText('my.chineseColors')
           } else if (type === 'japanese') {
             this.colors = japaneseColors
-            this.pageTitle = '日本传统色'
+            this.pageTitle = LocaleUtils.getText('my.japaneseColors')
+          } else if (type === 'uk') {
+            this.colors = ukColors
+            this.pageTitle = LocaleUtils.getText('my.ukColors')
+          } else if (type === 'usa') {
+            this.colors = usaColors
+            this.pageTitle = LocaleUtils.getText('my.usaColors')
+          } else if (type === 'france') {
+            this.colors = franceColors
+            this.pageTitle = LocaleUtils.getText('my.franceColors')
           } else {
             throw new Error('无效的颜色类型')
           }
         } catch (e) {
           console.error('加载颜色数据失败', e)
           uni.showToast({
-            title: '加载失败',
+            title: LocaleUtils.getText('common.loadFailed'),
             icon: 'none'
           })
         }

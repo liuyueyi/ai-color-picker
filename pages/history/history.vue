@@ -104,7 +104,7 @@ export default {
       } catch (e) {
         console.error('读取历史记录失败', e);
         uni.showToast({
-          title: '读取历史记录失败',
+          title: LocaleUtils.getText('common.loadHistoryFailed'),
           icon: 'none'
         });
       }

@@ -19,7 +19,6 @@
       <view class="fullscreen-icon" v-if="!isFullscreen">
         <uni-icons type="arrow-up" size="20" color="#fff" />
       </view>
-
     </view>
 
     <!-- 颜色信息 -->
@@ -35,7 +34,7 @@
       <view class="color-sliders">
         <view class="slider-item">
           <view class="slider-label">
-            <text>Red</text>
+            <text>{{ LocaleUtils.getText('detail.red') }}</text>
             <text>{{ color.rgb.r }}</text>
           </view>
           <slider :value="color.rgb.r" min="0" max="255" activeColor="#ff0000" backgroundColor="#e0e0e0" block-size="12"
@@ -43,7 +42,7 @@
         </view>
         <view class="slider-item">
           <view class="slider-label">
-            <text>Green</text>
+            <text>{{ LocaleUtils.getText('detail.green') }}</text>
             <text>{{ color.rgb.g }}</text>
           </view>
           <slider :value="color.rgb.g" min="0" max="255" activeColor="#00ff00" backgroundColor="#e0e0e0" block-size="12"
@@ -51,7 +50,7 @@
         </view>
         <view class="slider-item">
           <view class="slider-label">
-            <text>Blue</text>
+            <text>{{ LocaleUtils.getText('detail.blue') }}</text>
             <text>{{ color.rgb.b }}</text>
           </view>
           <slider :value="color.rgb.b" min="0" max="255" activeColor="#0000ff" backgroundColor="#e0e0e0" block-size="12"
@@ -64,41 +63,41 @@
       <!-- 详细信息 -->
       <view class="details-section">
         <view class="details-header" @click="toggleDetails">
-          <text style="font-weight: bold;">Details</text>
+          <text style="font-weight: bold;">{{ LocaleUtils.getText('detail.details') }}</text>
           <uni-icons :type="showDetails ? 'arrow-down' : 'arrow-right'" size="16" color="#666" />
         </view>
 
         <view class="details-content" v-if="showDetails">
           <view class="detail-item">
-            <text>HEX:</text>
+            <text>{{ LocaleUtils.getText('detail.hex') }}:</text>
             <text>{{ color.hex }}</text>
           </view>
           <view class="detail-item">
-            <text>RGB:</text>
+            <text>{{ LocaleUtils.getText('detail.rgb') }}:</text>
             <text>({{ color.rgb.r }}, {{ color.rgb.g }}, {{ color.rgb.b }})</text>
           </view>
           <view class="detail-item">
-            <text>HSL:</text>
+            <text>{{ LocaleUtils.getText('detail.hsl') }}:</text>
             <text>({{ color.hsl.h }}°, {{ color.hsl.s }}%, {{ color.hsl.l }}%)</text>
           </view>
           <view class="detail-item">
-            <text>HLV:</text>
+            <text>{{ LocaleUtils.getText('detail.hlv') }}:</text>
             <text>({{ color.hlv.h }}°, {{ color.hlv.l }}%, {{ color.hlv.v }}%)</text>
           </view>
           <view class="detail-item">
-            <text>CMYK:</text>
+            <text>{{ LocaleUtils.getText('detail.cmyk') }}:</text>
             <text>({{ color.cmyk.c }}%, {{ color.cmyk.m }}%, {{ color.cmyk.y }}%, {{ color.cmyk.k }}%)</text>
           </view>
           <view class="detail-item">
-            <text>Temperature:</text>
+            <text>{{ LocaleUtils.getText('detail.temperature') }}:</text>
             <text>{{ color.temperature }} K</text>
           </view>
           <view class="detail-item">
-            <text>Wavelength:</text>
+            <text>{{ LocaleUtils.getText('detail.wavelength') }}:</text>
             <text>{{ color.wavelength }} nm</text>
           </view>
           <view class="detail-item">
-            <text>Luminance:</text>
+            <text>{{ LocaleUtils.getText('detail.luminance') }}:</text>
             <text>{{ color.luminance }}%</text>
           </view>
         </view>
@@ -108,7 +107,7 @@
 
       <!-- 相似颜色 -->
       <view class="similar-colors">
-        <view class="section-title">Similar colors</view>
+        <view class="section-title">{{ LocaleUtils.getText('detail.similarColors') }}</view>
         <view class="similar-color-list">
           <view class="similar-color-item" v-for="(item, index) in similarColors" :key="index">
             <view class="similar-color-circle" :style="{ backgroundColor: item.hex }"></view>
@@ -145,7 +144,7 @@
     <view class="color-picker-popup-mask" v-if="showColorPicker" @click="showColorPicker = false">
       <view class="color-picker-popup" @click.stop>
         <view class="popup-header">
-          <text class="popup-title">调色盘</text>
+          <text class="popup-title">{{ LocaleUtils.getText('detail.colorPalette') }}</text>
           <view class="popup-close" @click="showColorPicker = false">
             <uni-icons type="close" size="20" color="#666" />
           </view>
@@ -162,7 +161,7 @@
     <view class="group-popup-mask" v-if="showGroupSelector" @click="showGroupSelector = false">
       <view class="group-popup" @click.stop>
         <view class="popup-header">
-          <text class="popup-title">选择分组</text>
+          <text class="popup-title">{{ LocaleUtils.getText('detail.selectGroup') }}</text>
           <view class="popup-close" @click="showGroupSelector = false">
             <uni-icons type="close" size="20" color="#666" />
           </view>
@@ -176,8 +175,8 @@
           </view>
         </scroll-view>
         <view class="add-group">
-          <input type="text" v-model="newGroupName" placeholder="新建分组" class="group-input" />
-          <button class="add-btn" @click="createNewGroup">添加</button>
+          <input type="text" v-model="newGroupName" :placeholder="LocaleUtils.getText('detail.newGroup')" class="group-input" />
+          <button class="add-btn" @click="createNewGroup">{{ LocaleUtils.getText('common.confirm') }}</button>
         </view>
       </view>
     </view>
@@ -185,21 +184,21 @@
     <view class="save-popup-mask" v-if="showSavePopup" @click="showSavePopup = false">
       <view class="save-popup" @click.stop>
         <view class="popup-header">
-          <text class="popup-title">保存颜色</text>
+          <text class="popup-title">{{ LocaleUtils.getText('detail.saveColor') }}</text>
           <view class="popup-close" @click="showSavePopup = false">
             <uni-icons type="close" size="20" color="#666" />
           </view>
         </view>
         <view class="popup-content">
-          <input type="text" v-model="colorName" placeholder="请输入颜色名称" class="color-input" />
+          <input type="text" v-model="colorName" :placeholder="LocaleUtils.getText('detail.enterColorName')" class="color-input" />
           <picker @change="onGroupChange" :value="selectedGroup" :range="colorGroups" range-key="name"
             class="group-picker">
-            <view class="picker-value">{{ selectedGroup ? selectedGroup : '请选择分组' }}</view>
+            <view class="picker-value">{{ selectedGroup ? selectedGroup : LocaleUtils.getText('detail.selectGroup') }}</view>
           </picker>
         </view>
         <view class="popup-footer">
-          <button class="cancel-btn" @click="showSavePopup = false">取消</button>
-          <button class="save-btn" @click="saveColor">保存</button>
+          <button class="cancel-btn" @click="showSavePopup = false">{{ LocaleUtils.getText('common.cancel') }}</button>
+          <button class="confirm-btn" @click="saveColor">{{ LocaleUtils.getText('common.confirm') }}</button>
         </view>
       </view>
     </view>
@@ -210,10 +209,12 @@
 import ColorUtils from '../../utils/colorUtils.js';
 import AdsUtils from '../../utils/AdsUtils.js';
 import GroupUtils from '../../utils/GroupUtils.js';
+import LocaleUtils from '../../utils/LocaleUtils.js'
 
 export default {
   data() {
     return {
+      LocaleUtils,
       color: {
         name: '',
         hex: '#000000',
@@ -465,12 +466,12 @@ export default {
       uni.reLaunch({
         url: '/pages/index/index',
         success: () => {
-          console.log('成功返回主页');
+          console.log(LocaleUtils.getText('detail.backHomeSuccess'));
         },
         fail: (err) => {
-          console.error('返回主页失败', err);
+          console.error(LocaleUtils.getText('common.backHomeError'), err);
           uni.showToast({
-            title: '返回主页失败',
+            title: LocaleUtils.getText('common.backHomeError'),
             icon: 'none'
           });
         }
@@ -549,19 +550,19 @@ export default {
         {
           name: this.color.name,
           hex: this.shiftColor(r, g, b, 10, 5, 0),
-          category: 'Common colors',
+          category: 'Common',
           percent: 97
         },
         {
           name: this.color.name,
           hex: this.shiftColor(r, g, b, -10, -5, 5),
-          category: 'Common colors',
+          category: 'Common',
           percent: 93
         },
         {
           name: this.color.name,
           hex: this.shiftColor(r, g, b, 15, 10, -5),
-          category: 'Common colors',
+          category: 'Common',
           percent: 90
         }
       ];
@@ -607,14 +608,14 @@ export default {
           this.favoriteColors.splice(index, 1);
         }
         uni.showToast({
-          title: '已取消收藏',
+          title: LocaleUtils.getText('detail.removedFromFavorite'),
           icon: 'none'
         });
       } else {
         // 添加到收藏
         this.favoriteColors.push(this.color);
         uni.showToast({
-          title: '已添加到收藏',
+          title: LocaleUtils.getText('detail.addedToFavorite'),
           icon: 'success'
         });
       }
@@ -628,7 +629,7 @@ export default {
       } catch (e) {
         console.error('保存收藏失败', e);
         uni.showToast({
-          title: '操作失败',
+          title: LocaleUtils.getText('detail.operationFailed'),
           icon: 'none'
         });
       }
@@ -654,7 +655,7 @@ export default {
     createNewGroup() {
       if (!this.newGroupName.trim()) {
         uni.showToast({
-          title: '分组名称不能为空',
+          title: LocaleUtils.getText('detail.groupNameRequired'),
           icon: 'none'
         });
         return;
@@ -663,7 +664,7 @@ export default {
       const result = GroupUtils.createGroup(this.newGroupName);
       if (result.success) {
         this.colorGroups = GroupUtils.getGroups();
-        this.newGroupName = '';
+        this.showGroupSelector = false;
         uni.showToast({
           title: result.message,
           icon: 'success'
@@ -690,12 +691,12 @@ export default {
           // 重置分组为默认值
           this.color.category = 'Common';
           uni.showToast({
-            title: '已从分组移除',
+            title: LocaleUtils.getText('favorite.removeSuccess'),
             icon: 'success'
           });
         } else {
           uni.showToast({
-            title: result.message,
+            title: LocaleUtils.getText('detail.operationFailed'),
             icon: 'none'
           });
         }
@@ -728,7 +729,7 @@ export default {
       } catch (e) {
         console.error('保存颜色分组失败', e);
         uni.showToast({
-          title: '操作失败',
+          title: LocaleUtils.getText('detail.operationFailed'),
           icon: 'none'
         });
       }
@@ -744,7 +745,7 @@ export default {
     saveColor() {
       if (!this.colorName.trim()) {
         uni.showToast({
-          title: '请输入颜色名称',
+          title: LocaleUtils.getText('detail.colorNameRequired'),
           icon: 'none'
         });
         return;
@@ -752,7 +753,7 @@ export default {
 
       if (!this.selectedGroup) {
         uni.showToast({
-          title: '请选择分组',
+          title: LocaleUtils.getText('detail.groupRequired'),
           icon: 'none'
         });
         return;
@@ -787,7 +788,7 @@ export default {
         }
 
         uni.showToast({
-          title: '保存成功',
+          title: LocaleUtils.getText('detail.saveSuccess'),
           icon: 'success'
         });
       } else {

@@ -1,3 +1,5 @@
+import LocaleUtils from './LocaleUtils.js'
+
 /**
  * 颜色处理工具类
  */
@@ -162,83 +164,83 @@ export default class ColorUtils {
 
         // 灰度系列
         if (s < 10) {
-            if (l < 15) return '黑色 (Black)';
-            if (l < 30) return '深灰 (Dark Gray)';
-            if (l < 50) return '灰色 (Gray)';
-            if (l < 70) return '浅灰 (Light Gray)';
-            if (l < 85) return '银色 (Silver)';
-            return '白色 (White)';
+            if (l < 15) return LocaleUtils.getText('colors.colorNames.black');
+            if (l < 30) return LocaleUtils.getText('colors.colorNames.darkGray');
+            if (l < 50) return LocaleUtils.getText('colors.colorNames.gray');
+            if (l < 70) return LocaleUtils.getText('colors.colorNames.lightGray');
+            if (l < 85) return LocaleUtils.getText('colors.colorNames.silver');
+            return LocaleUtils.getText('colors.colorNames.white');
         }
 
         // 根据色相判断基本颜色
         if (h >= 0 && h < 15 || h >= 345 && h <= 360) {
-            if (l < 20) return '深红 (Dark Red)';
-            if (l < 40) return '红色 (Red)';
-            if (l < 60) return '鲜红 (Bright Red)';
-            return '浅红 (Light Red)';
+            if (l < 20) return LocaleUtils.getText('colors.colorNames.darkRed');
+            if (l < 40) return LocaleUtils.getText('colors.colorNames.red');
+            if (l < 60) return LocaleUtils.getText('colors.colorNames.brightRed');
+            return LocaleUtils.getText('colors.colorNames.lightRed');
         }
 
         if (h >= 15 && h < 40) {
-            if (l < 30) return '棕色 (Brown)';
-            if (l < 50) return '橙色 (Orange)';
-            if (s > 80) return '金色 (Gold)';
-            return '橘黄 (Orange Yellow)';
+            if (l < 30) return LocaleUtils.getText('colors.colorNames.brown');
+            if (l < 50) return LocaleUtils.getText('colors.colorNames.orange');
+            if (s > 80) return LocaleUtils.getText('colors.colorNames.gold');
+            return LocaleUtils.getText('colors.colorNames.orangeYellow');
         }
 
         if (h >= 40 && h < 70) {
-            if (l < 30) return '橄榄 (Olive)';
-            if (l < 50) return '黄色 (Yellow)';
-            if (l < 70) return '鲜黄 (Bright Yellow)';
-            return '浅黄 (Light Yellow)';
+            if (l < 30) return LocaleUtils.getText('colors.colorNames.olive');
+            if (l < 50) return LocaleUtils.getText('colors.colorNames.yellow');
+            if (l < 70) return LocaleUtils.getText('colors.colorNames.brightYellow');
+            return LocaleUtils.getText('colors.colorNames.lightYellow');
         }
 
         if (h >= 70 && h < 150) {
-            if (l < 20) return '深绿 (Dark Green)';
-            if (l < 40) return '绿色 (Green)';
-            if (h < 100) return '黄绿 (Yellow Green)';
-            if (h > 120) return '青绿 (Teal)';
-            return '鲜绿 (Bright Green)';
+            if (l < 20) return LocaleUtils.getText('colors.colorNames.darkGreen');
+            if (l < 40) return LocaleUtils.getText('colors.colorNames.green');
+            if (h < 100) return LocaleUtils.getText('colors.colorNames.yellowGreen');
+            if (h > 120) return LocaleUtils.getText('colors.colorNames.teal');
+            return LocaleUtils.getText('colors.colorNames.brightGreen');
         }
 
         if (h >= 150 && h < 200) {
-            if (l < 20) return '深青 (Dark Cyan)';
-            if (l < 40) return '青色 (Cyan)';
-            if (l < 60) return '湖蓝 (Turquoise)';
-            return '浅青 (Light Cyan)';
+            if (l < 20) return LocaleUtils.getText('colors.colorNames.darkCyan');
+            if (l < 40) return LocaleUtils.getText('colors.colorNames.cyan');
+            if (l < 60) return LocaleUtils.getText('colors.colorNames.turquoise');
+            return LocaleUtils.getText('colors.colorNames.lightCyan');
         }
 
         if (h >= 200 && h < 260) {
-            if (l < 20) return '深蓝 (Dark Blue)';
-            if (l < 40) return '蓝色 (Blue)';
-            if (l < 60) return '天蓝 (Sky Blue)';
-            return '浅蓝 (Light Blue)';
+            if (l < 20) return LocaleUtils.getText('colors.colorNames.darkBlue');
+            if (l < 40) return LocaleUtils.getText('colors.colorNames.blue');
+            if (l < 60) return LocaleUtils.getText('colors.colorNames.skyBlue');
+            return LocaleUtils.getText('colors.colorNames.lightBlue');
         }
 
         if (h >= 260 && h < 285) {
-            if (l < 20) return '深紫 (Dark Purple)';
-            if (l < 40) return '紫色 (Purple)';
-            if (l < 60) return '鲜紫 (Bright Purple)';
-            return '浅紫 (Light Purple)';
+            if (l < 20) return LocaleUtils.getText('colors.colorNames.darkPurple');
+            if (l < 40) return LocaleUtils.getText('colors.colorNames.purple');
+            if (l < 60) return LocaleUtils.getText('colors.colorNames.brightPurple');
+            return LocaleUtils.getText('colors.colorNames.lightPurple');
         }
 
         if (h >= 285 && h < 345) {
-            if (l < 20) return '深粉 (Dark Pink)';
-            if (l < 40) return '品红 (Magenta)';
-            if (l < 60) return '粉红 (Pink)';
-            return '浅粉 (Light Pink)';
+            if (l < 20) return LocaleUtils.getText('colors.colorNames.darkPink');
+            if (l < 40) return LocaleUtils.getText('colors.colorNames.magenta');
+            if (l < 60) return LocaleUtils.getText('colors.colorNames.pink');
+            return LocaleUtils.getText('colors.colorNames.lightPink');
         }
 
         // 特殊颜色判断
         if (r > 150 && g > 100 && b > 50 && r > g && g > b) {
-            if (l < 40) return '铜色 (Copper)';
-            return '古铜 (Bronze)';
+            if (l < 40) return LocaleUtils.getText('colors.colorNames.copper');
+            return LocaleUtils.getText('colors.colorNames.bronze');
         }
 
         if (Math.abs(r - g) < 10 && Math.abs(g - b) < 10 && Math.abs(r - b) < 10) {
-            return '中性灰 (Neutral Gray)';
+            return LocaleUtils.getText('colors.colorNames.neutralGray');
         }
 
-        return '未知 (Unknown)';
+        return LocaleUtils.getText('colors.colorNames.unknown');
     }
 
     /**

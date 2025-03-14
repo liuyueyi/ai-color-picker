@@ -1,3 +1,5 @@
+import LocaleUtils from './LocaleUtils.js'
+
 /**
  * 颜色分组工具类
  * 提供颜色分组的统一管理功能，包括查询、新建、删除、重命名等
@@ -48,14 +50,14 @@ export default class GroupUtils {
      */
     static createGroup(groupName) {
         if (!groupName || groupName.trim() === '') {
-            return { success: false, message: '分组名称不能为空' }
+            return { success: false, message: LocaleUtils.getText('groups.groupNameEmpty') }
         }
 
         try {
             const groups = this.getGroups()
             // 检查是否存在同名分组
             if (groups.some(group => group.name === groupName)) {
-                return { success: false, message: '已存在同名分组' }
+                return { success: false, message: LocaleUtils.getText('groups.groupNameExist') }
             }
 
             const newGroup = {
@@ -66,13 +68,13 @@ export default class GroupUtils {
             groups.push(newGroup)
 
             if (this.saveGroups(groups)) {
-                return { success: true, message: '创建成功', group: newGroup }
+                return { success: true, message: LocaleUtils.getText('groups.createSuccess'), group: newGroup }
             } else {
-                return { success: false, message: '创建失败' }
+                return { success: false, message: LocaleUtils.getText('groups.createFailed') }
             }
         } catch (e) {
             console.error('创建分组失败:', e)
-            return { success: false, message: '创建失败' }
+            return { success: false, message: LocaleUtils.getText('groups.createFailed') }
         }
     }
 
@@ -87,19 +89,19 @@ export default class GroupUtils {
             const index = groups.findIndex(group => group.id === groupId)
 
             if (index === -1) {
-                return { success: false, message: '分组不存在' }
+                return { success: false, message: LocaleUtils.getText('groups.groupNotExist') }
             }
 
             groups.splice(index, 1)
 
             if (this.saveGroups(groups)) {
-                return { success: true, message: '删除成功' }
+                return { success: true, message: LocaleUtils.getText('groups.deleteSuccess') }
             } else {
-                return { success: false, message: '删除失败' }
+                return { success: false, message: LocaleUtils.getText('groups.deleteFailed') }
             }
         } catch (e) {
             console.error('删除分组失败:', e)
-            return { success: false, message: '删除失败' }
+            return { success: false, message: LocaleUtils.getText('groups.deleteFailed') }
         }
     }
 
@@ -111,7 +113,7 @@ export default class GroupUtils {
      */
     static renameGroup(groupId, newName) {
         if (!newName || newName.trim() === '') {
-            return { success: false, message: '分组名称不能为空' }
+            return { success: false, message: LocaleUtils.getText('groups.groupNameEmpty') }
         }
 
         try {
@@ -119,24 +121,24 @@ export default class GroupUtils {
             const group = groups.find(group => group.id === groupId)
 
             if (!group) {
-                return { success: false, message: '分组不存在' }
+                return { success: false, message: LocaleUtils.getText('groups.groupNotExist') }
             }
 
             // 检查是否存在同名分组（排除自身）
             if (groups.some(g => g.id !== groupId && g.name === newName)) {
-                return { success: false, message: '已存在同名分组' }
+                return { success: false, message: LocaleUtils.getText('groups.groupNameExist') }
             }
 
             group.name = newName
 
             if (this.saveGroups(groups)) {
-                return { success: true, message: '重命名成功' }
+                return { success: true, message: LocaleUtils.getText('groups.renameSuccess') }
             } else {
-                return { success: false, message: '重命名失败' }
+                return { success: false, message: LocaleUtils.getText('groups.renameFailed') }
             }
         } catch (e) {
             console.error('重命名分组失败:', e)
-            return { success: false, message: '重命名失败' }
+            return { success: false, message: LocaleUtils.getText('groups.renameFailed') }
         }
     }
 
@@ -152,7 +154,7 @@ export default class GroupUtils {
             const group = groups.find(group => group.id === groupId)
 
             if (!group) {
-                return { success: false, message: '分组不存在' }
+                return { success: false, message: LocaleUtils.getText('groups.groupNotExist') }
             }
 
             // 检查颜色是否已存在于当前分组
@@ -164,23 +166,23 @@ export default class GroupUtils {
                     group.colors[index] = { ...color };
 
                     if (this.saveGroups(groups)) {
-                        return { success: true, message: '更新成功' };
+                        return { success: true, message: LocaleUtils.getText('groups.addColorSuccess') };
                     }
                 }
-                return { success: true, message: '添加成功' };
+                return { success: true, message: LocaleUtils.getText('groups.addColorSuccess') };
             }
 
             // 添加到新分组
             group.colors.push({ ...color, category: group.name });
 
             if (this.saveGroups(groups)) {
-                return { success: true, message: '添加成功' }
+                return { success: true, message: LocaleUtils.getText('groups.addColorSuccess') }
             } else {
-                return { success: false, message: '添加失败' }
+                return { success: false, message: LocaleUtils.getText('groups.addColorFailed') }
             }
         } catch (e) {
             console.error('添加颜色失败:', e)
-            return { success: false, message: '添加失败' }
+            return { success: false, message: LocaleUtils.getText('groups.addColorFailed') }
         }
     }
 
@@ -196,24 +198,24 @@ export default class GroupUtils {
             const group = groups.find(group => group.id === groupId)
 
             if (!group) {
-                return { success: false, message: '分组不存在' }
+                return { success: false, message: LocaleUtils.getText('groups.groupNotExist') }
             }
 
             const index = group.colors.findIndex(color => color.hex === colorHex)
             if (index === -1) {
-                return { success: false, message: '颜色不存在于该分组' }
+                return { success: false, message: LocaleUtils.getText('groups.colorNotExist') }
             }
 
             group.colors.splice(index, 1)
 
             if (this.saveGroups(groups)) {
-                return { success: true, message: '移除成功' }
+                return { success: true, message: LocaleUtils.getText('groups.removeColorSuccess') }
             } else {
-                return { success: false, message: '移除失败' }
+                return { success: false, message: LocaleUtils.getText('groups.removeColorFailed') }
             }
         } catch (e) {
             console.error('移除颜色失败:', e)
-            return { success: false, message: '移除失败' }
+            return { success: false, message: LocaleUtils.getText('groups.removeColorFailed') }
         }
     }
 }

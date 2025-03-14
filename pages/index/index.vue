@@ -17,18 +17,19 @@
     </view>
     <view class="empty-container" v-else @click="chooseImage">
       <uni-icons type="image" size="64" color="#ccc" />
-      <text class="empty-text">点击选择图片</text>
+      <text class="empty-text">{{ LocaleUtils.getText('index.selectImage') }}</text>
     </view>
     <!-- 颜色显示区域 -->
     <view class="color-display" v-if="selectedColor" :style="{ backgroundColor: selectedColor.hex }">
       <view class="details-save-button" :style="{ backgroundColor: getContrastBackgroundColor() }" @click="saveColor">
-        <text :style="{ color: getContrastColor() }">保存</text>
+        <text :style="{ color: getContrastColor() }">{{ LocaleUtils.getText('index.save') }}</text>
       </view>
       <text class="color-name" :style="{ color: getContrastColor() }">{{ selectedColor.name }}</text>
       <text class="color-hex" :style="{ color: getContrastColor() }">{{ selectedColor.hex }}</text>
       <view class="details-button" :style="{ backgroundColor: getContrastBackgroundColor() }"
-        @click="showDetails = !showDetails"> <text :style="{ color: getContrastColor() }">{{ showDetails ? '隐藏详情' :
-          '显示详情' }}</text>
+        @click="showDetails = !showDetails"> <text :style="{ color: getContrastColor() }">{{ showDetails ?
+          LocaleUtils.getText('index.hideDetails') :
+          LocaleUtils.getText('index.showDetails') }}</text>
       </view>
     </view>
 
@@ -38,7 +39,7 @@
         <!-- 颜色温度 -->
         <view class="detail-item">
           <view class="detail-header">
-            <text>Color temperature: {{ selectedColor.temperature }} K</text>
+            <text>{{ LocaleUtils.getText('index.colorTemperature') }}: {{ selectedColor.temperature }} K</text>
             <uni-icons type="arrow-up" size="16" color="#fff" />
           </view>
           <view class="temperature-bar">
@@ -50,7 +51,7 @@
         <!-- 主波长 -->
         <view class="detail-item">
           <view class="detail-header">
-            <text>Dominant wavelength: {{ selectedColor.wavelength }} nm</text>
+            <text>{{ LocaleUtils.getText('index.dominantWavelength') }}: {{ selectedColor.wavelength }} nm</text>
             <uni-icons type="arrow-up" size="16" color="#fff" />
           </view>
           <view class="wavelength-bar">
@@ -64,7 +65,7 @@
         <!-- 亮度 -->
         <view class="detail-item">
           <view class="detail-header">
-            <text>Luminance: {{ selectedColor.luminance }}%</text>
+            <text>{{ LocaleUtils.getText('index.luminance') }}: {{ selectedColor.luminance }}%</text>
             <uni-icons type="arrow-up" size="16" color="#fff" />
           </view>
           <view class="luminance-bar">
@@ -191,11 +192,6 @@
             </view>
           </view>
         </view>
-
-        <!-- 保存按钮 -->
-        <!-- <view class="save-button" @click="saveColor">
-          <text>保存颜色</text>
-        </view> -->
       </scroll-view>
     </view>
   </view>
@@ -207,25 +203,29 @@
   <view class="dialog-mask" v-if="showNameDialog" @click="cancelSaveColor">
     <view class="dialog-container" @click.stop>
       <view class="dialog-header">
-        <text>保存颜色</text>
+        <text>{{ LocaleUtils.getText('index.saveColor') }}</text>
       </view>
       <view class="dialog-content">
         <view class="color-preview" :style="{ backgroundColor: selectedColor ? selectedColor.hex : '#000' }"></view>
-        <input class="name-input" v-model="colorNameInput" placeholder="请输入颜色名称" />
+        <input class="name-input" v-model="colorNameInput" :placeholder="LocaleUtils.getText('index.enterColorName')" />
         <picker @change="onGroupChange" :value="selectedGroup" :range="colorGroups" range-key="name"
           class="group-picker">
-          <view class="picker-value">{{ selectedGroup ? selectedGroup : '请选择分组' }}</view>
+          <view class="picker-value">{{ selectedGroup ? selectedGroup : LocaleUtils.getText('index.selectGroup') }}
+          </view>
         </picker>
       </view>
       <view class="dialog-footer">
-        <button class="dialog-btn cancel-btn" @click="cancelSaveColor">取消</button>
-        <button class="dialog-btn confirm-btn" @click="confirmSaveColor">确认</button>
+        <button class="dialog-btn cancel-btn" @click="cancelSaveColor">{{ LocaleUtils.getText('common.cancel')
+          }}</button>
+        <button class="dialog-btn confirm-btn" @click="confirmSaveColor">{{ LocaleUtils.getText('common.confirm')
+          }}</button>
       </view>
     </view>
   </view>
 </template>
 
 <script>
+import LocaleUtils from '../../utils/LocaleUtils.js'
 import ColorUtils from '../../utils/colorUtils.js';
 import AdsUtils from '../../utils/AdsUtils.js';
 import GroupUtils from '../../utils/GroupUtils.js';
@@ -233,6 +233,7 @@ import GroupUtils from '../../utils/GroupUtils.js';
 export default {
   data() {
     return {
+      LocaleUtils,
       imagePath: '',
       selectedColor: null,
       showDetails: false,
@@ -602,7 +603,7 @@ export default {
 
       if (!this.colorNameInput.trim()) {
         uni.showToast({
-          title: '请输入颜色名称',
+          title: LocaleUtils.getText('index.pleaseEnterColorName'),
           icon: 'none'
         });
         return;
@@ -644,13 +645,13 @@ export default {
         }
 
         uni.showToast({
-          title: '颜色已保存',
+          title: LocaleUtils.getText('index.colorSaved'),
           icon: 'success'
         });
       } catch (e) {
         console.error('保存历史记录失败', e);
         uni.showToast({
-          title: '保存失败',
+          title: LocaleUtils.getText('index.saveFailed'),
           icon: 'none'
         });
       }

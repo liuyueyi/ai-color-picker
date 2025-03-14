@@ -199,6 +199,73 @@
     border-bottom: 1px solid #f0f0f0;
 }
 
+.language-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.panel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.panel-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.panel-header {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+}
+
+.panel-body {
+    padding: 10px 0;
+}
+
+.language-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    margin: 8px 0;
+    border-radius: 12px;
+    background-color: #f7f8fa;
+    transition: background-color 0.2s ease;
+}
+
+.language-option.active {
+    background-color: #e8f2ff;
+}
+
+.language-option:active {
+    background-color: #e0e0e0;
+}
+
+.language-option text {
+    font-size: 16px;
+    color: #333;
+}
+
 .dialog-body {
     padding: 24px 20px;
 }

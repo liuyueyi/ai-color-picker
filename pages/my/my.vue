@@ -3,8 +3,9 @@
         <!-- 顶部导航栏 -->
         <view class="navbar">
             <view class="navbar-left"></view>
-            <view class="navbar-title">My</view>
+            <view class="navbar-title">{{ LocaleUtils.getText('common.my') }}</view>
             <view class="navbar-right">
+                <uni-icons type="gear" size="20" color="#666" @click="showLanguagePanel = true" />
             </view>
         </view>
 
@@ -12,15 +13,15 @@
             <!-- 系统色 -->
             <view class="system-colors">
                 <view class="section-header">
-                    <text>系统色</text>
+                    <text>{{ LocaleUtils.getText('my.systemColors') }}</text>
                     <uni-icons type="right" size="16" color="#666" />
                 </view>
                 <view class="color-categories">
                     <view class="category-item" @click="navigateToCategory('chinese')">
-                        <text>中国传统色</text>
+                        <text>{{ LocaleUtils.getText('my.chineseColors') }}</text>
                     </view>
                     <view class="category-item" @click="navigateToCategory('japanese')">
-                        <text>日本传统色</text>
+                        <text>{{ LocaleUtils.getText('my.japaneseColors') }}</text>
                     </view>
                 </view>
             </view>
@@ -28,17 +29,14 @@
             <!-- 我的 -->
             <view class="my-section">
                 <view class="section-header">
-                    <text>我的</text>
+                    <text>{{ LocaleUtils.getText('my.title') }}</text>
                     <uni-icons type="right" size="16" color="#666" />
                 </view>
                 <view class="my-categories">
                     <view class="category-item" @click="navigateToFavorites">
                         <uni-icons type="heart-filled" color="#666" />
-                        <text style="padding-left: 0.2rem;font-size: 1.1rem;">收藏</text>
+                        <text style="padding-left: 0.2rem;font-size: 1.1rem;">{{ LocaleUtils.getText('common.favorite') }}</text>
                     </view>
-                    <!-- <view class="category-item" @click="navigateToGroups">
-                        <text>分组</text>
-                    </view> -->
                     <view class="category-item add-group" @click="showAddGroupDialog">
                         <uni-icons type="plus" size="20" color="#666" />
                     </view>
@@ -49,7 +47,7 @@
                         @click="handleGroupItemClick($event, group.id)">
                         <view class="group-info">
                             <text class="group-name">{{ group.name }}</text>
-                            <text class="color-count">{{ group.colors.length }}个颜色</text>
+                            <text class="color-count">{{ group.colors.length }}{{ LocaleUtils.getText('my.colorCount') }}</text>
                         </view>
                         <view class="group-actions">
                             <uni-icons type="trash" size="25" color="#666" data-action="delete" />
@@ -59,25 +57,45 @@
                     </view>
                 </view>
                 <view class="empty-hint" v-else>
-                    <text>暂无分组，点击上方加号创建新分组</text>
+                    <text>{{ LocaleUtils.getText('my.noGroups') }}</text>
                 </view>
             </view>
         </view>
+
         <!-- 添加分组对话框 -->
         <view class="add-group-dialog" v-if="showAddGroup">
             <view class="dialog-overlay" @click="showAddGroup = false"></view>
             <view class="dialog-content">
                 <view class="dialog-header">
-                    <text>新建分组</text>
+                    <text>{{ LocaleUtils.getText('favorite.createGroup') }}</text>
                 </view>
                 <view class="dialog-body">
-                    <input type="text" v-model="newGroupName" placeholder="请输入分组名称"
-                        @keypress.enter="handleEnterPress"
-                        class="group-input" focus />
+                    <input type="text" v-model="newGroupName" :placeholder="LocaleUtils.getText('favorite.groupName')"
+                        @keypress.enter="handleEnterPress" class="group-input" focus />
                 </view>
                 <view class="dialog-footer">
-                    <button @click="showAddGroup = false">取消</button>
-                    <button @click="handleConfirm" type="primary">确定</button>
+                    <button @click="showAddGroup = false">{{ LocaleUtils.getText('common.cancel') }}</button>
+                    <button @click="handleConfirm" type="primary">{{ LocaleUtils.getText('common.confirm') }}</button>
+                </view>
+            </view>
+        </view>
+
+        <!-- 语言选择面板 -->
+        <view class="language-panel" v-if="showLanguagePanel">
+            <view class="panel-overlay" @click="showLanguagePanel = false"></view>
+            <view class="panel-content">
+                <view class="panel-header">
+                    <text>{{ LocaleUtils.getText('my.language') }}</text>
+                </view>
+                <view class="panel-body">
+                    <view class="language-option" :class="{ active: currentLanguage === 'zh-CN' }" @click="changeLanguage('zh-CN')">
+                        <text>简体中文</text>
+                        <uni-icons v-if="currentLanguage === 'zh-CN'" type="checkmarkempty" size="20" color="#007AFF" />
+                    </view>
+                    <view class="language-option" :class="{ active: currentLanguage === 'en-US' }" @click="changeLanguage('en-US')">
+                        <text>English</text>
+                        <uni-icons v-if="currentLanguage === 'en-US'" type="checkmarkempty" size="20" color="#007AFF" />
+                    </view>
                 </view>
             </view>
         </view>
@@ -85,22 +103,24 @@
 </template>
 
 <script>
-import  GroupUtils  from '../../utils/GroupUtils.js'
+import GroupUtils from '../../utils/GroupUtils.js'
+import LocaleUtils from '../../utils/LocaleUtils.js'
 
 export default {
     data() {
         return {
+            LocaleUtils,
             showAddGroup: false,
+            showLanguagePanel: false,
             newGroupName: '',
-            groups: []
+            groups: [],
+            currentLanguage: LocaleUtils.getCurrentLocale()
         }
     },
     onLoad() {
         this.loadGroups()
     },
-    // 添加 onShow 生命周期函数
     onShow() {
-        // 每次页面显示时重新加载收藏列表
         this.loadGroups()
     },
     methods: {
@@ -108,25 +128,16 @@ export default {
             this.groups = GroupUtils.getGroups()
         },
         navigateToCategory(type) {
-            // 导航到对应的传统色页面
             uni.navigateTo({
                 url: `/pages/colors/colors?type=${type}`
             })
         },
         navigateToFavorites() {
-            // 导航到收藏页面
             uni.navigateTo({
                 url: '/pages/favorite/favorite'
             })
         },
-        navigateToGroups() {
-            // 导航到分组页面
-            uni.navigateTo({
-                url: '/pages/groups/groups'
-            })
-        },
         navigateToGroup(groupId) {
-            // 导航到具体分组页面
             uni.navigateTo({
                 url: `/pages/favorite/groups?id=${groupId}`
             })
@@ -163,7 +174,7 @@ export default {
                 this.showAddGroup = false
             } else {
                 uni.showToast({
-                    title: '分组名称不能为空',
+                    title: LocaleUtils.getText('my.groupNameRequired'),
                     icon: 'none'
                 })
             }
@@ -185,8 +196,8 @@ export default {
         },
         deleteGroup(groupId) {
             uni.showModal({
-                title: '删除分组',
-                content: '确定要删除这个分组吗？',
+                title: LocaleUtils.getText('favorite.deleteGroup'),
+                content: LocaleUtils.getText('my.confirmDeleteGroup'),
                 success: (res) => {
                     if (res.confirm) {
                         const result = GroupUtils.deleteGroup(groupId)
@@ -208,10 +219,10 @@ export default {
         },
         editGroup(group) {
             uni.showModal({
-                title: '编辑分组',
+                title: LocaleUtils.getText('my.editGroup'),
                 editable: true,
                 content: group.name,
-                placeholderText: '请输入新的分组名称',
+                placeholderText: LocaleUtils.getText('favorite.groupName'),
                 success: (res) => {
                     if (res.confirm && res.content) {
                         const result = GroupUtils.renameGroup(group.id, res.content)
@@ -229,6 +240,15 @@ export default {
                         }
                     }
                 }
+            })
+        },
+        changeLanguage(lang) {
+            LocaleUtils.setLocale(lang)
+            this.currentLanguage = lang
+            this.showLanguagePanel = false
+            // 刷新页面
+            uni.reLaunch({
+                url: '/pages/my/my'
             })
         }
     }

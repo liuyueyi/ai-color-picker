@@ -5,6 +5,7 @@
       <view class="toolbar-icons">
         <view class="icon-item" @click="chooseImage"> <uni-icons type="camera" size="24" color="#333" /></view>
         <view class="icon-item" @click="resetImage"><uni-icons type="refresh" size="24" color="#333" /></view>
+        <view class="icon-item" @click="loadDemoImage"><uni-icons type="help" size="24" color="#333" /></view>
       </view>
     </view>
 
@@ -199,6 +200,28 @@
   <canvas canvas-id="colorPickerCanvas"
     :style="{ position: 'absolute', width: canvasWidth + 'px', height: canvasHeight + 'px', left: '-999px' }"></canvas>
 
+
+  <!-- 提示信息区域 -->
+  <view class="tip-dialog-mask" v-if="showTips" @click="showTips = false">
+    <view class="tip-dialog" @click.stop>
+      <view class="close-btn" @click="showTips = false">
+        <uni-icons type="close" size="20" color="#666" />
+      </view>
+      <text class="tips-title">{{ LocaleUtils.getText('index.tips.title') }}</text>
+      <view class="tips-content">
+        <text>{{ LocaleUtils.getText('index.tips.description') }}</text>
+        <text>{{ LocaleUtils.getText('index.tips.colorIdentification') }}</text>
+        <text>{{ LocaleUtils.getText('index.tips.dynamicRange') }}</text>
+        <text>{{ LocaleUtils.getText('index.tips.scientificData') }}</text>
+        <text>{{ LocaleUtils.getText('index.tips.imageColor') }}</text>
+        <text>{{ LocaleUtils.getText('index.tips.savedColors') }}</text>
+        <text>{{ LocaleUtils.getText('index.tips.searchColors') }}</text>
+        <text class="disclaimer">{{ LocaleUtils.getText('index.tips.disclaimer') }}</text>
+        <text class="ai-notice">{{ LocaleUtils.getText('index.tips.aiNotice') }}</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 颜色命名弹窗 -->
   <view class="dialog-mask" v-if="showNameDialog" @click="cancelSaveColor">
     <view class="dialog-container" @click.stop>
@@ -241,27 +264,16 @@ export default {
       colorHistory: [],
       canvasWidth: 100,
       canvasHeight: 100,
-      // 新增变量
       showNameDialog: false,
       colorNameInput: '',
-      detailsMaxHeight: 600, // 默认最大高度
-      colorGroups: [], // 颜色分组
-      selectedGroup: '', // 选中的分组
+      detailsMaxHeight: 600,
+      colorGroups: [],
+      selectedGroup: '',
+      showTips: false, // 新增：控制提示信息显示
     }
   },
   onShow() {
-    uni.setTabBarItem({
-      index: 0,
-      text: LocaleUtils.getText('tabBar.picker')
-    })
-    uni.setTabBarItem({
-      index: 1,
-      text: LocaleUtils.getText('tabBar.record')
-    })
-    uni.setTabBarItem({
-      index: 2,
-      text: LocaleUtils.getText('tabBar.my')
-    })
+    LocaleUtils.updateTabBar();
   },
   onLoad() {
     try {
@@ -291,15 +303,33 @@ export default {
     this.calculateDetailsMaxHeight();
 
     // 等待组件渲染完成后触发颜色提取
-    setTimeout(() => {
-      // 模拟点击中心位置
-      const centerX = this.canvasWidth / 2;
-      const centerY = this.canvasHeight / 2;
-      this.indicatorPosition = { x: centerX, y: centerY };
-      this.extractColorFromImage(centerX, centerY);
-    }, 500);
+    this.mockClicked();
   },
   methods: {
+    loadDemoImage() {
+      if (!this.imagePath) {
+        this.imagePath = '/static/bg/girl.jpg';
+        this.mockClicked();
+      }
+      // 显示提示信息
+      this.showTips = true;
+      // // 3秒后自动隐藏
+      // setTimeout(() => {
+      //   this.showTips = false;
+      // }, 3000);
+    },
+    mockClicked() {
+      // 等待图片加载完成后触发颜色提取
+      setTimeout(() => {
+        // 获取屏幕尺寸
+        const systemInfo = uni.getSystemInfoSync();
+        // 使用屏幕中心坐标
+        const centerX = systemInfo.windowWidth / 2;
+        const centerY = systemInfo.windowHeight / 2;
+        this.indicatorPosition = { x: centerX, y: centerY };
+        this.extractColorFromImage(centerX, centerY);
+      }, 500);
+    },
     // 计算详情区域最大高度
     calculateDetailsMaxHeight() {
       const systemInfo = uni.getSystemInfoSync();

@@ -175,6 +175,18 @@ export default {
         saveFailed: 'Échec de l\'enregistrement',
         cameraPermissionRequired: 'L\'autorisation de la caméra est requise pour prendre des photos',
         selectImageFailed: 'Échec de la sélection de l\'image',
-        colorExtractionFailed: 'Échec de l\'extraction des couleurs, veuillez réessayer'
+        colorExtractionFailed: 'Échec de l\'extraction des couleurs, veuillez réessayer',
+        tips: {
+            title: 'Guide d\'utilisation',
+            description: 'Color Picker - Une application pour identifier les couleurs à partir de la caméra ou des images.',
+            colorIdentification: 'Identifiez les couleurs à partir de plusieurs palettes de couleurs.',
+            dynamicRange: '• Plage dynamique. Faites simplement glisser l\'écran pour ajuster la plage. Vous pouvez rapidement identifier la couleur du point central ou la couleur moyenne de toute la zone sélectionnée. Si un cercle est sélectionné, il utilise en fait la couleur du point correspondant à la croix au centre du cercle.',
+            scientificData: '• Consultez les données scientifiques sur les couleurs. Cliquez sur le bouton voir les détails pour entrer en mode expert. Il affiche la température de couleur (Kelvin), la position de la couleur sur le spectre, les valeurs de couleur dans divers modèles de couleur (RGB, CMYK, HSV, etc.), et les couleurs les plus similaires dans la palette sélectionnée avec le degré de correspondance (pourcentage).',
+            imageColor: '• Identifiez les couleurs dans les images. Ouvrez une image et identifiez/sauvegardez les couleurs souhaitées de n\'importe quelle partie de l\'image.',
+            savedColors: '• Utilisez les couleurs sauvegardées. Les couleurs sauvegardées peuvent être modifiées.',
+            searchColors: '• Recherchez et parcourez les couleurs dans la base de données. En recherchant par valeur hexadécimale ou nom de couleur, vous trouverez rapidement la couleur souhaitée dans la base de données. Vous pouvez envoyer n\'importe quel texte à l\'application pour rechercher dans la base de données via la boîte de dialogue système "Partager".',
+            disclaimer: '✨Avertissement. En raison de la reproduction des couleurs, les échantillons de couleurs peuvent différer significativement de l\'original. Toutes les couleurs sont données à titre indicatif uniquement. N\'utilisez pas ces valeurs lorsqu\'une correspondance des couleurs de haute précision est requise.',
+            aiNotice: '💡Les images fournies par défaut sont générées par l\'IA.'
+        }
     }
 }

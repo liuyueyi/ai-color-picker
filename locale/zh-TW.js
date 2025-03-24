@@ -15,7 +15,8 @@ export default {
         confirm: '確定',
         loadFailed: '加載失敗',
         backHomeError: '返回主頁失敗',
-        loadHistoryFailed: '讀取歷史記錄失敗'
+        loadHistoryFailed: '讀取歷史記錄失敗',
+        adsDisabled: '廣告已禁用'
     },
     groups: {
         createSuccess: '創建成功',
@@ -144,7 +145,9 @@ export default {
     },
     my: {
         title: '個人中心',
+        settings: '設置',
         language: '語言設置',
+        disableAds: '點擊視頻激勵廣告，一天內不再主動顯示廣告',
         about: '關於我們',
         feedback: '意見反饋',
         systemColors: '系統色',
@@ -153,6 +156,7 @@ export default {
         ukColors: '英國傳統色',
         usaColors: '美國傳統色',
         franceColors: '法國傳統色',
+        germanyColors: '德國傳統色',
         colorCount: '個顏色',
         noGroups: '暫無分組',
         editGroup: '編輯分組',

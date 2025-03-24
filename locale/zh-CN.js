@@ -15,7 +15,8 @@ export default {
         confirm: '确定',
         loadFailed: '加载失败',
         backHomeError: '返回主页失败',
-        loadHistoryFailed: '读取历史记录失败'
+        loadHistoryFailed: '读取历史记录失败',
+        adsDisabled: '广告已禁用'
     },
     groups: {
         createSuccess: '创建成功',
@@ -144,7 +145,9 @@ export default {
     },
     my: {
         title: '个人中心',
+        settings: '设置',
         language: '语言设置',
+        disableAds: '点击视频激励广告，一天内不再主动显示广告',
         about: '关于我们',
         feedback: '意见反馈',
         systemColors: '系统色',
@@ -153,6 +156,7 @@ export default {
         ukColors: '英国传统色',
         usaColors: '美国传统色',
         franceColors: '法国传统色',
+        germanyColors: '德国传统色',
         colorCount: '个颜色',
         noGroups: '暂无分组',
         editGroup: '编辑分组',

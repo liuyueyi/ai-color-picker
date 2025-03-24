@@ -3,9 +3,10 @@ import zhCN from '../locale/zh-CN.js'
 import jaJP from '../locale/ja-JP.js'
 import zhTW from '../locale/zh-TW.js'
 import frFR from '../locale/fr-FR.js'
+import deDE from '../locale/de-DE.js'
 
 const LOCALE_KEY = 'app_locale'
-const DEFAULT_LOCALE = 'zh-CN'
+const DEFAULT_LOCALE = 'en-US'
 
 export default class LocaleUtils {
     static locales = {
@@ -13,10 +14,27 @@ export default class LocaleUtils {
         'zh-CN': zhCN,
         'ja-JP': jaJP,
         'zh-TW': zhTW,
-        'fr-FR': frFR
+        'fr-FR': frFR,
+        'de-DE': deDE,
     }
 
     static currentLocale = uni.getStorageSync(LOCALE_KEY) || DEFAULT_LOCALE
+
+    static getLanguageName(lan) {
+        if (lan == 'en-US') {
+            return 'English'
+        } else if (lan == 'zh-CN') {
+            return '简体中文' 
+        } else if (lan == 'ja-JP') {
+            return '日本語' 
+        } else if (lan == 'zh-TW') {
+            return '繁體中文'
+        }   else if (lan == 'fr-FR') {
+            return 'Français' 
+        } else if (lan == 'de-DE') {
+            return 'Deutsch'
+        }
+    }
 
     /**
      * 获取当前语言

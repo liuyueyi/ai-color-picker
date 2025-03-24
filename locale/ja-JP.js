@@ -15,7 +15,8 @@ export default {
         confirm: '確認',
         loadFailed: '読み込み失敗',
         backHomeError: 'ホームページに戻れませんでした',
-        loadHistoryFailed: '履歴の読み込みに失敗しました'
+        loadHistoryFailed: '履歴の読み込みに失敗しました',
+        adsDisabled: '広告が無効になりました'
     },
     groups: {
         createSuccess: '作成成功',
@@ -143,8 +144,10 @@ export default {
         deleteFailed: '削除失敗'
     },
     my: {
-        title: 'プロフィール',
+        title: 'マイページ',
+        settings: '設定',
         language: '言語設定',
+        disableAds: '動画広告を視聴すると、1日間自動広告表示を無効にできます',
         about: '私たちについて',
         feedback: 'フィードバック',
         systemColors: 'システムカラー',
@@ -153,6 +156,7 @@ export default {
         ukColors: 'イギリスの伝統色',
         usaColors: 'アメリカの伝統色',
         franceColors: 'フランスの伝統色',
+        germanyColors: 'ドイツの伝統色',
         colorCount: ' 色',
         noGroups: 'グループがありません',
         editGroup: 'グループを編集',

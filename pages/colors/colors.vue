@@ -80,6 +80,7 @@
   import ukColors from '../../utils/uk_color.js'
   import usaColors from '../../utils/usa_color.js'
   import franceColors from '../../utils/france_color.js'
+  import germanyColors from '../../utils/germany_color.js'
   import LocaleUtils from '../../utils/LocaleUtils.js'
 
   export default {
@@ -169,7 +170,11 @@
           } else if (type === 'france') {
             this.colors = franceColors
             this.pageTitle = LocaleUtils.getText('my.franceColors')
-          } else {
+          } else if (type === 'germany') {
+            this.colors = germanyColors
+            this.pageTitle = LocaleUtils.getText('my.germanyColors')
+          }
+          else {
             throw new Error('无效的颜色类型')
           }
         } catch (e) {

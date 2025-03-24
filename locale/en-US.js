@@ -15,7 +15,8 @@ export default {
         confirm: 'Confirm',
         loadFailed: 'Load Failed',
         backHomeError: 'Failed to return to home page',
-        loadHistoryFailed: 'Failed to load history'
+        loadHistoryFailed: 'Failed to load history',
+        adsDisabled: 'Ads disabled'
     },
     groups: {
         createSuccess: 'Created successfully',
@@ -144,7 +145,9 @@ export default {
     },
     my: {
         title: 'Profile',
+        settings: 'Settings',
         language: 'Language Settings',
+        disableAds: 'Click on video reward ads to disable auto-display ads for one day',
         about: 'About Us',
         feedback: 'Feedback',
         systemColors: 'System Colors',

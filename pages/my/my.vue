@@ -10,6 +10,34 @@
         </view>
 
         <view class="my-content">
+            <!-- 设置面板 -->
+            <view class="settings-panel">
+                <view class="section-header">
+                    <text>{{ LocaleUtils.getText('my.settings') }}</text>
+                </view>
+                <view class="settings-list">
+                    <view class="settings-item" @click="showLanguagePanel = true">
+                        <view class="settings-item-left">
+                            <uni-icons type="language" size="20" color="#666" />
+                            <text>{{ LocaleUtils.getText('my.language') }}</text>
+                        </view>
+                        <view class="settings-item-right">
+                            <text class="current-language">{{ LocaleUtils.getLanguageName(currentLanguage) }}</text>
+                            <uni-icons type="right" size="16" color="#666" />
+                        </view>
+                    </view>
+                    <view class="settings-item" v-if="showAdsSettings">
+                        <view class="settings-item-left">
+                            <uni-icons type="notification" size="20" color="#666" />
+                            <text>{{ LocaleUtils.getText('my.disableAds') }}</text>
+                        </view>
+                        <view class="settings-item-right">
+                            <switch :checked="isAdsDisabled" @change="handleAdsChange" color="#1a1a1a" />
+                        </view>
+                    </view>
+                </view>
+            </view>
+
             <!-- 系统色 -->
             <view class="system-colors">
                 <view class="section-header">
@@ -31,6 +59,9 @@
                     </view>
                     <view class="category-item" @click="navigateToCategory('france')">
                         <text>{{ LocaleUtils.getText('my.franceColors') }}</text>
+                    </view>
+                    <view class="category-item" @click="navigateToCategory('germany')">
+                        <text>{{ LocaleUtils.getText('my.germanyColors') }}</text>
                     </view>
                 </view>
             </view>
@@ -124,6 +155,11 @@
                         <text>Français</text>
                         <uni-icons v-if="currentLanguage === 'fr-FR'" type="checkmarkempty" size="20" color="#007AFF" />
                     </view>
+                    <view class="language-option" :class="{ active: currentLanguage === 'fr-FR' }"
+                        @click="changeLanguage('de-DE')">
+                        <text>Deutsch</text>
+                        <uni-icons v-if="currentLanguage === 'de-DE'" type="checkmarkempty" size="20" color="#007AFF" />
+                    </view>
                 </view>
             </view>
         </view>
@@ -133,6 +169,7 @@
 <script>
 import GroupUtils from '../../utils/GroupUtils.js'
 import LocaleUtils from '../../utils/LocaleUtils.js'
+import AdsUtils from '../../utils/AdsUtils.js'
 
 export default {
     data() {
@@ -142,7 +179,9 @@ export default {
             showLanguagePanel: false,
             newGroupName: '',
             groups: [],
-            currentLanguage: LocaleUtils.getCurrentLocale()
+            currentLanguage: LocaleUtils.getCurrentLocale(),
+            isAdsDisabled: false,
+            showAdsSettings: AdsUtils.androidPlantform(),
         }
     },
     onLoad() {
@@ -270,6 +309,22 @@ export default {
                     }
                 }
             })
+        },
+        handleAdsChange(e) {
+            AdsUtils.showRewards((res) => {
+                if (res) {
+                    uni.showToast({
+                        title: LocaleUtils.getText('common.adsDisabled'),
+                        icon: 'success'
+                    })
+                }
+            })
+
+            this.isAdsDisabled = AdsUtils.isAdsDisabled();
+            console.log('显示广告状态:', this.isAdsDisabled);
+        },
+        lanName() {
+            return LocaleUtils.getLanguageName(this.currentLanguage)
         },
         changeLanguage(lang) {
             LocaleUtils.setLocale(lang)

@@ -15,7 +15,8 @@ export default {
         confirm: 'Confirmer',
         loadFailed: 'Échec du chargement',
         backHomeError: 'Échec du retour à la page d\'accueil',
-        loadHistoryFailed: 'Échec du chargement de l\'historique'
+        loadHistoryFailed: 'Échec du chargement de l\'historique',
+        adsDisabled: 'Publicités désactivées'
     },
     groups: {
         createSuccess: 'Création réussie',
@@ -144,7 +145,9 @@ export default {
     },
     my: {
         title: 'Profil',
+        settings: 'Paramètres',
         language: 'Paramètres de langue',
+        disableAds: 'Cliquez sur les publicités vidéo pour désactiver l\'affichage automatique des publicités pendant une journée',
         about: 'À propos',
         feedback: 'Retour d\'information',
         systemColors: 'Couleurs système',
@@ -153,6 +156,7 @@ export default {
         ukColors: 'Couleurs traditionnelles britanniques',
         usaColors: 'Couleurs traditionnelles américaines',
         franceColors: 'Couleurs traditionnelles françaises',
+        germanyColors: 'Couleurs traditionnelles allemandes',
         colorCount: ' couleurs',
         noGroups: 'Aucun groupe',
         editGroup: 'Modifier le groupe',

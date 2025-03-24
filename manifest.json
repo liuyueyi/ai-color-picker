@@ -2,13 +2,13 @@
     "name" : "color-picker",
     "appid" : "__UNI__8B5430F",
     "description" : "",
-    "versionName" : "1.0.2",
-    "versionCode" : 102,
+    "versionName" : "1.1.0",
+    "versionCode" : 110,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
-        "compatible": {
-        	"ignoreVersion": true // 忽略版本检测提示框
+        "compatible" : {
+            "ignoreVersion" : true // 忽略版本检测提示框
         },
         "ignoreVersion" : true, // 忽略版本检测提示框
         "titleNView" : false,
@@ -51,7 +51,8 @@
             "sdkConfigs" : {
                 "ad" : {}
             }
-        }
+        },
+        "nativePlugins" : {}
     },
     /* 快应用特有相关 */
     "quickapp" : {},
@@ -76,5 +77,10 @@
         "enable" : false
     },
     "vueVersion" : "3",
-    "locale" : "en"
+    "locale" : "en",
+    "h5" : {
+        "router" : {
+            "base" : "/app/color-picker/"
+        }
+    }
 }

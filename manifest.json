@@ -80,7 +80,7 @@
     "locale" : "en",
     "h5" : {
         "router" : {
-            "base" : "/app/color-picker/"
+            "base" : ""
         }
     }
 }

@@ -12,7 +12,7 @@
     <!-- 图片区域 -->
     <view class="image-container" v-if="imagePath" :style="{ backgroundColor: selectedColor ? selectedColor.hex : '' }">
       <view class="grid-background"></view>
-      <image :src="imagePath" mode="aspectFit" @touchstart="pickColor" @touchmove="pickColor" @click="pickColor" @mousemove="pickColor"></image>
+      <image :src="imagePath" mode="aspectFit" @touchstart="pickColor" @touchmove="pickColor" @click="pickColor"></image>
       <view class="color-picker-indicator"
         :style="{ left: indicatorPosition.x + 'px', top: indicatorPosition.y + 'px' }"></view>
     </view>

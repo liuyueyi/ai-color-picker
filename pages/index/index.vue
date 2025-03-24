@@ -12,7 +12,7 @@
     <!-- 图片区域 -->
     <view class="image-container" v-if="imagePath" :style="{ backgroundColor: selectedColor ? selectedColor.hex : '' }">
       <view class="grid-background"></view>
-      <image :src="imagePath" mode="aspectFit" @touchstart="pickColor" @touchmove="pickColor"></image>
+      <image :src="imagePath" mode="aspectFit" @touchstart="pickColor" @touchmove="pickColor" @click="pickColor" @mousemove="pickColor"></image>
       <view class="color-picker-indicator"
         :style="{ left: indicatorPosition.x + 'px', top: indicatorPosition.y + 'px' }"></view>
     </view>
@@ -397,8 +397,10 @@ export default {
     },
     // 提取颜色
     pickColor(e) {
-      // 获取触摸位置
-      const touch = e.touches[0];
+      // 获取事件位置，兼容触摸和鼠标事件
+      const position = e.touches ? e.touches[0] : e;
+      const pageX = position.pageX || position.clientX;
+      const pageY = position.pageY || position.clientY;
 
       // 获取图片容器位置信息
       const query = uni.createSelectorQuery().in(this);
@@ -409,8 +411,8 @@ export default {
         }
 
         // 计算相对于图片容器的位置
-        const x = touch.pageX - data.left;
-        const y = touch.pageY - data.top;
+        const x = pageX - data.left;
+        const y = pageY - data.top;
 
         // 更新指示器位置
         this.indicatorPosition = { x, y };
